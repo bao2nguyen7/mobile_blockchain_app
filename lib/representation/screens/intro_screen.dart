@@ -3,6 +3,7 @@ import 'package:mobile_app_blockchain/core/constants/dismenssion_constants.dart'
 import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
 import 'package:mobile_app_blockchain/representation/screens/login_screen.dart';
+import 'package:mobile_app_blockchain/representation/screens/qrcode_screen.dart';
 import 'package:mobile_app_blockchain/representation/widgets/button_widgets.dart';
 
 class IntroScreen extends StatefulWidget {
@@ -44,7 +45,7 @@ class _IntroScreenState extends State<IntroScreen> {
                     ),
                     SizedBox(height: kMediumPadding * 6),
                     ButtonWidget(
-                        title: 'Bắt đầu ngay',
+                        title: 'Start',
                         onTap: () {
                           Navigator.of(context)
                               .pushNamed(LoginScreen.routeName);
@@ -54,7 +55,10 @@ class _IntroScreenState extends State<IntroScreen> {
                       opacity: 0.8,
                       child: ButtonWidget(
                         title: 'QR Code ',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(QRCodeScreen.routeName);
+                        },
                       ),
                     )
                   ],

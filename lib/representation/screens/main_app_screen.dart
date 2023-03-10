@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app_blockchain/representation/screens/home_screen.dart';
 import 'package:mobile_app_blockchain/representation/screens/product_screen.dart';
+import 'package:mobile_app_blockchain/representation/screens/profile.screen.dart';
 
 import '../../core/constants/color_constants.dart';
 import '../../core/constants/dismenssion_constants.dart';
@@ -24,7 +25,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
           HomeScreen(),
           ProductScreen(),
           Container(color: Colors.white),
-          Container(color: Colors.blue),
+          ProfileScreen(),
         ]),
         bottomNavigationBar: SalomonBottomBar(
           currentIndex: _currentIndex,

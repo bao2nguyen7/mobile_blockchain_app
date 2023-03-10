@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
+import 'package:mobile_app_blockchain/representation/screens/information_screen.dart';
 
 import '../../core/constants/dismenssion_constants.dart';
 import '../../core/helpers/assets_helper.dart';
@@ -64,64 +65,70 @@ class _ProductScreenState extends State<ProductScreen> {
                       padding: const EdgeInsets.all(kDefaultPadding),
                       child: Column(
                         children: [
-                          SizedBox(height: kDefaultPadding),
-                          Expanded(
-                            flex: 6,
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: ColorPalette.backgroundScaffoldColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(kMediumPadding))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(kMediumPadding),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: kDefaultPadding / 2),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text('ID',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600)),
-                                          Text('Name',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600)),
-                                          Text('Code',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600)),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                        child: ListView.builder(
-                                            itemCount: stations.length,
-                                            itemBuilder: (context, index) {
-                                              final item = stations[index];
-                                              return ListTile(
-                                                title: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text('${item.id}'),
-                                                      Text(item.product_name),
-                                                      Text(
-                                                          '${item.product_code}')
-                                                    ]),
-                                              );
-                                            }))
-                                  ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed(InformationScreen.routeName);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: 110,
+                                  height: 39,
+                                  decoration: BoxDecoration(
+                                      color: ColorPalette.primaryColor,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30))),
+                                  child: Text(
+                                    'Add',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
+                            ],
+                          ),
+                          SizedBox(height: kDefaultPadding),
+                          Expanded(
+                              child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: ColorPalette.backgroundScaffoldColor,
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(kMediumPadding))),
+                            child: ListView.builder(
+                                itemCount: stations.length,
+                                itemBuilder: (context, index) {
+                                  final item = stations[index];
+                                  return ListTile(
+                                    onTap: () {},
+                                    leading: CircleAvatar(
+                                        backgroundColor:
+                                            ColorPalette.primaryColor,
+                                        child: Text(
+                                          '${item.id}',
+                                          style: TextStyle(color: Colors.white),
+                                        )),
+                                    title: Text('${item.product_name}'),
+                                    subtitle:
+                                        Text('${item.product_description}'),
+                                    trailing:
+                                        PopupMenuButton(itemBuilder: (context) {
+                                      return [
+                                        PopupMenuItem(
+                                            child: Text('Edit'), value: 'edit'),
+                                        PopupMenuItem(
+                                            child: Text('Delete'),
+                                            value: 'delete'),
+                                      ];
+                                    }),
+                                  );
+                                }),
+                          )),
                         ],
                       ),
                     )),
@@ -135,30 +142,30 @@ class _ProductScreenState extends State<ProductScreen> {
 class Station {
   int id;
   String product_name;
-  int product_code;
-  Station(this.id, this.product_name, this.product_code);
+  String product_description;
+  Station(this.id, this.product_name, this.product_description);
 }
 
 List<Station> stations = [
-  Station(1, 'Orange', 001),
-  Station(2, 'Orange', 002),
-  Station(3, 'Orange', 003),
-  Station(4, 'Orange', 003),
-  Station(5, 'Orange', 003),
-  Station(6, 'Orange', 003),
-  Station(7, 'Orange', 003),
-  Station(8, 'Orange', 003),
-  Station(9, 'Orange', 003),
-  Station(10, 'Orange', 003),
-  Station(11, 'Orange', 003),
-  Station(12, 'Orange', 003),
-  Station(13, 'Orange', 003),
-  Station(14, 'Orange', 003),
-  Station(15, 'Orange', 003),
-  Station(16, 'Orange', 003),
-  Station(17, 'Orange', 003),
-  Station(18, 'Orange', 003),
-  Station(19, 'Orange', 003),
-  Station(20, 'Orange', 003),
-  Station(21, 'Orange', 003),
+  Station(1, 'Orange', 'good'),
+  Station(2, 'Orange', 'bad'),
+  Station(3, 'Orange', 'bad'),
+  Station(4, 'Orange', 'bad'),
+  Station(5, 'Orange', 'bad'),
+  Station(6, 'Orange', 'bad'),
+  Station(7, 'Orange', 'bad'),
+  Station(8, 'Orange', 'bad'),
+  Station(9, 'Orange', 'bad'),
+  Station(10, 'Orange', 'bad'),
+  Station(11, 'Orange', 'bad'),
+  Station(12, 'Orange', 'good'),
+  Station(13, 'Orange', 'good'),
+  Station(14, 'Orange', 'good'),
+  Station(15, 'Orange', 'good'),
+  Station(16, 'Orange', 'good'),
+  Station(17, 'Orange', 'good'),
+  Station(18, 'Orange', 'good'),
+  Station(19, 'Orange', 'good'),
+  Station(20, 'Orange', 'good'),
+  Station(21, 'Orange', 'good'),
 ];
