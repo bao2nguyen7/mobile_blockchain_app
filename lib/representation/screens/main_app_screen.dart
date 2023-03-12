@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app_blockchain/representation/screens/home_screen.dart';
+import 'package:mobile_app_blockchain/representation/screens/information_screen.dart';
 import 'package:mobile_app_blockchain/representation/screens/product_screen.dart';
 import 'package:mobile_app_blockchain/representation/screens/profile.screen.dart';
 
@@ -20,6 +21,15 @@ class _MainAppScreenState extends State<MainAppScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed(InformationScreen.routeName);
+          },
+          backgroundColor: ColorPalette.primaryColor,
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.miniEndDocked,
         backgroundColor: Colors.white,
         body: IndexedStack(index: _currentIndex, children: [
           HomeScreen(),

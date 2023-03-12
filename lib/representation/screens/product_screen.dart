@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 import 'package:mobile_app_blockchain/representation/screens/information_screen.dart';
+import 'package:mobile_app_blockchain/representation/screens/updateInfor_screen.dart';
 
 import '../../core/constants/dismenssion_constants.dart';
 import '../../core/helpers/assets_helper.dart';
@@ -65,70 +66,66 @@ class _ProductScreenState extends State<ProductScreen> {
                       padding: const EdgeInsets.all(kDefaultPadding),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .pushNamed(InformationScreen.routeName);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  width: 110,
-                                  height: 39,
-                                  decoration: BoxDecoration(
-                                      color: ColorPalette.primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(30))),
-                                  child: Text(
-                                    'Add',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: kDefaultPadding),
+                          SizedBox(height: 5),
                           Expanded(
-                              child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                color: ColorPalette.backgroundScaffoldColor,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(kMediumPadding))),
                             child: ListView.builder(
                                 itemCount: stations.length,
                                 itemBuilder: (context, index) {
                                   final item = stations[index];
-                                  return ListTile(
-                                    onTap: () {},
-                                    leading: CircleAvatar(
-                                        backgroundColor:
-                                            ColorPalette.primaryColor,
-                                        child: Text(
-                                          '${item.id}',
-                                          style: TextStyle(color: Colors.white),
-                                        )),
-                                    title: Text('${item.product_name}'),
-                                    subtitle:
-                                        Text('${item.product_description}'),
-                                    trailing:
-                                        PopupMenuButton(itemBuilder: (context) {
-                                      return [
-                                        PopupMenuItem(
-                                            child: Text('Edit'), value: 'edit'),
-                                        PopupMenuItem(
-                                            child: Text('Delete'),
-                                            value: 'delete'),
-                                      ];
-                                    }),
+                                  return Card(
+                                    color: Color.fromARGB(255, 236, 233, 233),
+                                    child: ListTile(
+                                      onTap: () {
+                                        print(Text("Hello"));
+                                      },
+                                      leading: CircleAvatar(
+                                          backgroundColor:
+                                              ColorPalette.primaryColor,
+                                          child: Text(
+                                            '${item.id}',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )),
+                                      title: Text(
+                                        '${item.product_name}',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      subtitle: Text(
+                                          '${item.product_description}',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w300)),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pushNamed(
+                                                    UpdateInformationScreen
+                                                        .routeName);
+                                              },
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color:
+                                                    ColorPalette.primaryColor,
+                                              )),
+                                          IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  stations.removeAt(index);
+                                                });
+                                              },
+                                              icon: const Icon(Icons.delete,
+                                                  color: ColorPalette
+                                                      .primaryColor)),
+                                        ],
+                                      ),
+                                    ),
                                   );
                                 }),
-                          )),
+                          ),
                         ],
                       ),
                     )),

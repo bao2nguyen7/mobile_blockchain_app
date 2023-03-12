@@ -77,7 +77,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       'Name',
                                       style: TextStyle(
                                           color: ColorPalette.text1Color,
-                                          fontSize: 16),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -92,7 +93,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       'Role',
                                       style: TextStyle(
                                           color: ColorPalette.text1Color,
-                                          fontSize: 16),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -107,7 +109,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       'Code',
                                       style: TextStyle(
                                           color: ColorPalette.text1Color,
-                                          fontSize: 16),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -122,7 +125,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       'Blockchain Address',
                                       style: TextStyle(
                                           color: ColorPalette.text1Color,
-                                          fontSize: 16),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),

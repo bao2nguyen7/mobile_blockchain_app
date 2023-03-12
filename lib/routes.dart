@@ -9,6 +9,7 @@ import 'package:mobile_app_blockchain/representation/screens/profile.screen.dart
 import 'package:mobile_app_blockchain/representation/screens/qrcode_screen.dart';
 
 import 'package:mobile_app_blockchain/representation/screens/register_screen.dart';
+import 'package:mobile_app_blockchain/representation/screens/updateInfor_screen.dart';
 
 import 'representation/screens/login_screen.dart';
 import 'representation/screens/splash_screen.dart';
@@ -24,4 +25,6 @@ final Map<String, WidgetBuilder> routes = {
   QRCodeScreen.routeName: (context) => const QRCodeScreen(),
   InformationScreen.routeName: (context) => const InformationScreen(),
   ProfileScreen.routeName: (context) => const ProfileScreen(),
+  UpdateInformationScreen.routeName: (context) =>
+      const UpdateInformationScreen(),
 };
