@@ -7,22 +7,21 @@ import 'package:intl/intl.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
-import 'package:mobile_app_blockchain/representation/widgets/button_widgets.dart';
-import 'package:mobile_app_blockchain/representation/widgets/richText_widget.dart';
-import 'package:mobile_app_blockchain/representation/widgets/textfieldName_widget.dart';
+import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
+import 'package:mobile_app_blockchain/features/widgets/richText_widget.dart';
+import 'package:mobile_app_blockchain/features/widgets/textfieldName_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../core/constants/dismenssion_constants.dart';
+import '../../../core/constants/dismenssion_constants.dart';
 
-class UpdateInformationScreen extends StatefulWidget {
-  const UpdateInformationScreen({super.key});
-  static String routeName = '/update_information_screen';
+class InformationScreen extends StatefulWidget {
+  const InformationScreen({super.key});
+  static String routeName = '/information_screen';
   @override
-  State<UpdateInformationScreen> createState() =>
-      _UpdateInformationScreenState();
+  State<InformationScreen> createState() => _InformationScreenState();
 }
 
-class _UpdateInformationScreenState extends State<UpdateInformationScreen> {
+class _InformationScreenState extends State<InformationScreen> {
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _addressTextController = TextEditingController();
   TextEditingController _descriptionTextController = TextEditingController();
@@ -77,7 +76,7 @@ class _UpdateInformationScreenState extends State<UpdateInformationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Update Product",
+          "Add Product",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
@@ -261,7 +260,7 @@ class _UpdateInformationScreenState extends State<UpdateInformationScreen> {
                                 reusableTextFiledName(
                                     "Description", _nameTextController, true),
                                 SizedBox(height: kDefaultPadding * 2),
-                                ButtonWidget(title: "Update")
+                                ButtonWidget(title: "Add")
                               ],
                             ),
                           )),

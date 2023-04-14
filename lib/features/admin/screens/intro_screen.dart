@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/core/constants/dismenssion_constants.dart';
 import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
-import 'package:mobile_app_blockchain/representation/screens/login_screen.dart';
-import 'package:mobile_app_blockchain/representation/screens/qrcode_screen.dart';
-import 'package:mobile_app_blockchain/representation/widgets/button_widgets.dart';
+import 'package:mobile_app_blockchain/features/auth/screens/login_screen.dart';
+import 'package:mobile_app_blockchain/features/qrcode/screens/qrcode_screen.dart';
+import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});

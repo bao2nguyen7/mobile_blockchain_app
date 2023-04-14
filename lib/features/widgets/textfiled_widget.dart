@@ -30,7 +30,7 @@ TextFormField reusableTextFiled(String text, IconData icon, bool isPasswordType,
       if (text == null || text.isEmpty) {
         return 'Can\'t be empty';
       }
-      if (text.length < 4) {
+      if (text.length < 3) {
         return 'Too short';
       }
       return null;

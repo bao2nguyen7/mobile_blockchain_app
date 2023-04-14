@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
-import 'package:mobile_app_blockchain/representation/screens/home_screen.dart';
-import 'package:mobile_app_blockchain/representation/screens/splash_screen.dart';
+import 'package:mobile_app_blockchain/features/home/screens/home_screen.dart';
+import 'package:mobile_app_blockchain/features/admin/screens/splash_screen.dart';
+import 'package:mobile_app_blockchain/providers/user_providers.dart';
 import 'package:mobile_app_blockchain/routes.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

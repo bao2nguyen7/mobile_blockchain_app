@@ -2,11 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../core/constants/color_constants.dart';
-import '../../core/constants/dismenssion_constants.dart';
-import '../widgets/button_widgets.dart';
-import '../widgets/richText_widget.dart';
-import '../widgets/textfieldName_widget.dart';
+import '../../../core/constants/color_constants.dart';
+import '../../../core/constants/dismenssion_constants.dart';
+import '../../widgets/button_widgets.dart';
+import '../../widgets/richText_widget.dart';
+import '../../widgets/textfieldName_widget.dart';
+import '../services/auth_services.dart';
 import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -21,6 +22,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _roleTextController = TextEditingController();
   TextEditingController _codeTextController = TextEditingController();
   TextEditingController timeinput = TextEditingController();
+  void SignOutUser(BuildContext context) {
+    AuthService().SignOutUser(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -133,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName("Blockchain Address",
                                     _codeTextController, false),
-                                SizedBox(height: kDefaultPadding * 6),
+                                SizedBox(height: kDefaultPadding * 4),
                                 RichText(
                                   text: TextSpan(
                                       text: "",
@@ -143,10 +148,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       children: <TextSpan>[
                                         TextSpan(
                                             recognizer: TapGestureRecognizer()
-                                              ..onTap = () {
-                                                Navigator.of(context).pushNamed(
-                                                    LoginScreen.routeName);
-                                              },
+                                              ..onTap =
+                                                  () => SignOutUser(context),
                                             text: "Log Out",
                                             style: TextStyle(
                                                 color: Color.fromARGB(

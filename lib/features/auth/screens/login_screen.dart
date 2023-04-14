@@ -1,27 +1,39 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
+import 'package:mobile_app_blockchain/core/constants/dismenssion_constants.dart';
+import 'package:mobile_app_blockchain/core/constants/textstyle_constants.dart';
+import 'package:mobile_app_blockchain/features/home/screens/main_app_screen.dart';
+import 'package:mobile_app_blockchain/features/auth/screens/register_screen.dart';
+import 'package:mobile_app_blockchain/features/widgets/appBar_widget.dart';
+import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
+import 'package:mobile_app_blockchain/features/widgets/textfiled_widget.dart';
 
-import '../../core/constants/color_constants.dart';
-import '../../core/constants/dismenssion_constants.dart';
-import '../../core/helpers/assets_helper.dart';
-import '../../core/helpers/image_helper.dart';
-import '../widgets/button_widgets.dart';
-import '../widgets/textfiled_widget.dart';
-import 'login_screen.dart';
+import '../../../core/helpers/assets_helper.dart';
+import '../../../core/helpers/image_helper.dart';
+import '../../home/screens/home_screen.dart';
+import '../services/auth_services.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
-  static String routeName = '/register_screen';
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+  static String routeName = '/login_screen';
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  TextEditingController _passwordTextController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailTextController = TextEditingController();
-  TextEditingController _nameTextController = TextEditingController();
-  TextEditingController _phoneTextController = TextEditingController();
+  TextEditingController _passwordTextController = TextEditingController();
+  final AuthService authService = AuthService();
+
+  void LogInUser() {
+    authService.SignInUser(
+        context: context,
+        email: _emailTextController.text,
+        password: _passwordTextController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -74,34 +86,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       SizedBox(height: kDefaultPadding),
                       Text(
-                        'Sign Up',
+                        'Sign In',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: kDefaultPadding * 3),
-                      reusableTextFiled("Name", FontAwesomeIcons.user, false,
-                          _nameTextController),
+                      reusableTextFiled("Enter Email", FontAwesomeIcons.user,
+                          false, _emailTextController),
                       SizedBox(height: kDefaultPadding * 2),
-                      reusableTextFiled("Phone Number", FontAwesomeIcons.phone,
-                          true, _phoneTextController),
-                      SizedBox(height: kDefaultPadding * 2),
-                      reusableTextFiled("Email", FontAwesomeIcons.envelope,
-                          true, _phoneTextController),
-                      SizedBox(height: kDefaultPadding * 2),
-                      reusableTextFiled("Password", FontAwesomeIcons.lock, true,
-                          _emailTextController),
+                      reusableTextFiled("Enter password", FontAwesomeIcons.lock,
+                          true, _passwordTextController),
                       SizedBox(height: kDefaultPadding * 3),
-                      ButtonWidget(
-                        title: "Sign Up",
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(LoginScreen.routeName);
-                        },
-                      ),
+                      ButtonWidget(title: "Sign In", onTap: LogInUser),
                       SizedBox(height: kDefaultPadding * 3),
                       RichText(
                         text: TextSpan(
-                            text: "Already a User?",
+                            text: "New user?",
                             style: TextStyle(
                                 color: ColorPalette.text1Color, fontSize: 16),
                             children: <TextSpan>[
@@ -109,13 +109,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.of(context)
-                                          .pushNamed(LoginScreen.routeName);
+                                          .pushNamed(RegisterScreen.routeName);
                                     },
-                                  text: " Login now",
+                                  text: " Sign up for a new account",
                                   style: TextStyle(
                                       color: ColorPalette.blueColor,
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w800))
+                                      fontWeight: FontWeight.w600))
                             ]),
                       )
                     ],

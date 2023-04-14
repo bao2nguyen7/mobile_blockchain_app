@@ -7,21 +7,22 @@ import 'package:intl/intl.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
-import 'package:mobile_app_blockchain/representation/widgets/button_widgets.dart';
-import 'package:mobile_app_blockchain/representation/widgets/richText_widget.dart';
-import 'package:mobile_app_blockchain/representation/widgets/textfieldName_widget.dart';
+import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
+import 'package:mobile_app_blockchain/features/widgets/richText_widget.dart';
+import 'package:mobile_app_blockchain/features/widgets/textfieldName_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../core/constants/dismenssion_constants.dart';
+import '../../../core/constants/dismenssion_constants.dart';
 
-class InformationScreen extends StatefulWidget {
-  const InformationScreen({super.key});
-  static String routeName = '/information_screen';
+class UpdateInformationScreen extends StatefulWidget {
+  const UpdateInformationScreen({super.key});
+  static String routeName = '/update_information_screen';
   @override
-  State<InformationScreen> createState() => _InformationScreenState();
+  State<UpdateInformationScreen> createState() =>
+      _UpdateInformationScreenState();
 }
 
-class _InformationScreenState extends State<InformationScreen> {
+class _UpdateInformationScreenState extends State<UpdateInformationScreen> {
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _addressTextController = TextEditingController();
   TextEditingController _descriptionTextController = TextEditingController();
@@ -34,6 +35,7 @@ class _InformationScreenState extends State<InformationScreen> {
   }
 
   File? _image;
+
   Future getImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) return;
@@ -76,7 +78,7 @@ class _InformationScreenState extends State<InformationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Add Product",
+          "Update Product",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
@@ -166,34 +168,18 @@ class _InformationScreenState extends State<InformationScreen> {
                                     readOnly:
                                         true, //set it true, so that user will not able to edit text
                                     onTap: () async {
-                                      TimeOfDay? pickedTime =
-                                          await showTimePicker(
-                                        initialTime: TimeOfDay.now(),
-                                        context: context,
-                                      );
-
-                                      if (pickedTime != null) {
-                                        print(pickedTime
-                                            .format(context)); //output 10:51 PM
-                                        DateTime parsedTime = DateFormat.jm()
-                                            .parse(pickedTime
-                                                .format(context)
-                                                .toString());
-                                        //converting to DateTime so that we can further format on different pattern.
-                                        print(
-                                            parsedTime); //output 1970-01-01 22:53:00.000
-                                        String formattedTime =
-                                            DateFormat('HH:mm:ss')
-                                                .format(parsedTime);
-                                        print(formattedTime); //output 14:59:00
-                                        //DateFormat() is from intl package, you can format the time on any pattern you need.
-
+                                      DateTime? pikeddate =
+                                          await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime(2101));
+                                      if (pikeddate != null) {
                                         setState(() {
                                           timeinput.text =
-                                              formattedTime; //set the value of text field.
+                                              DateFormat('dd-MM-yyyy')
+                                                  .format(pikeddate);
                                         });
-                                      } else {
-                                        print("Time is not selected");
                                       }
                                     },
                                     autovalidateMode:
@@ -260,7 +246,7 @@ class _InformationScreenState extends State<InformationScreen> {
                                 reusableTextFiledName(
                                     "Description", _nameTextController, true),
                                 SizedBox(height: kDefaultPadding * 2),
-                                ButtonWidget(title: "Add")
+                                ButtonWidget(title: "Update")
                               ],
                             ),
                           )),

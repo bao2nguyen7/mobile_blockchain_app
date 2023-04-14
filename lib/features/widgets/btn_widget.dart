@@ -36,6 +36,7 @@ class BtnWidget extends StatelessWidget {
                 SizedBox(height: kMinPadding),
                 Text(
                   title,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: kTextMediumSize,
                       fontWeight: FontWeight.w500,
