@@ -1,9 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/dismenssion_constants.dart';
+import '../../../providers/user_providers.dart';
 import '../../widgets/button_widgets.dart';
 import '../../widgets/richText_widget.dart';
 import '../../widgets/textfieldName_widget.dart';
@@ -12,7 +14,7 @@ import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
-  static String routeName = '/profile_screen';
+  static const String routeName = '/profile_screen';
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -27,7 +29,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -89,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName(
-                                    "Name", _nameTextController, false),
+                                    user.name, _nameTextController, false),
                                 SizedBox(height: kDefaultPadding * 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -105,13 +113,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName(
-                                    "Role", _roleTextController, false),
+                                    "User", _roleTextController, false),
                                 SizedBox(height: kDefaultPadding * 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Code',
+                                      'Address',
                                       style: TextStyle(
                                           color: ColorPalette.text1Color,
                                           fontSize: 16,

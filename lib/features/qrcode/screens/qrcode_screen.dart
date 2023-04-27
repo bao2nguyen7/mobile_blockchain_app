@@ -5,7 +5,7 @@ import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 
 class QRCodeScreen extends StatefulWidget {
   const QRCodeScreen({super.key});
-  static String routeName = '/qrcode_screen';
+  static const String routeName = '/qrcode_screen';
   @override
   State<QRCodeScreen> createState() => _QRCodeScreenState();
 }

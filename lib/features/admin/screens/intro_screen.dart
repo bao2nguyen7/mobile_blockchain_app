@@ -8,7 +8,7 @@ import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
-  static String routeName = '/intro_screen';
+  static const String routeName = '/intro_screen';
   @override
   State<IntroScreen> createState() => _IntroScreenState();
 }

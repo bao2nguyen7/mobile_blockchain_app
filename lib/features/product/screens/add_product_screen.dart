@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,21 +13,28 @@ import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
 import 'package:mobile_app_blockchain/features/widgets/richText_widget.dart';
 import 'package:mobile_app_blockchain/features/widgets/textfieldName_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/dismenssion_constants.dart';
+import '../../../core/constants/utils.dart';
+import '../../../models/user.dart';
+import '../../../providers/user_providers.dart';
+import '../services/product_serviecs.dart';
 
-class InformationScreen extends StatefulWidget {
-  const InformationScreen({super.key});
-  static String routeName = '/information_screen';
+class AddProductScreen extends StatefulWidget {
+  const AddProductScreen({super.key});
+  static const String routeName = '/addProduct_screen';
   @override
-  State<InformationScreen> createState() => _InformationScreenState();
+  State<AddProductScreen> createState() => _AddProductScreenState();
 }
 
-class _InformationScreenState extends State<InformationScreen> {
+class _AddProductScreenState extends State<AddProductScreen> {
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _addressTextController = TextEditingController();
   TextEditingController _descriptionTextController = TextEditingController();
   TextEditingController timeinput = TextEditingController();
+  final ProductServices productServices = ProductServices();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -33,45 +42,42 @@ class _InformationScreenState extends State<InformationScreen> {
     super.initState();
   }
 
-  File? _image;
-  Future getImage() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image == null) return;
-    final imageTempogary = File(image.path);
-    setState(() {
-      this._image = imageTempogary;
-    });
-  }
-
-  Future takeImage() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (image == null) return;
-    final imageTempogary = File(image.path);
-    setState(() {
-      this._image = imageTempogary;
-    });
-  }
-
-  void _showDialog() {
-    showDialog(
+  List<File> images = [];
+  final _addProductFormKey = GlobalKey<FormState>();
+  //add-Product
+  void addProduct() {
+    if (_addProductFormKey.currentState!.validate() && images.isNotEmpty) {
+      productServices.addProduct(
         context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text(
-              "Choose Image",
-              style: TextStyle(fontSize: 25),
-            ),
-            content: Text("Camera or Gallery", style: TextStyle(fontSize: 15)),
-            actions: [
-              MaterialButton(onPressed: takeImage, child: Text("Camera")),
-              MaterialButton(onPressed: getImage, child: Text("Gallery")),
-            ],
-          );
-        });
+        name: _nameTextController.text,
+        description: _descriptionTextController.text,
+        address: _addressTextController.text,
+        time: timeinput.text,
+        images: images,
+      );
+    }
+  }
+
+  void selectImages() async {
+    var res = await pickImages();
+    setState(() {
+      images = res;
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _nameTextController.dispose();
+    _addressTextController.dispose();
+    _descriptionTextController.dispose();
+    timeinput.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -109,7 +115,8 @@ class _InformationScreenState extends State<InformationScreen> {
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(kMediumPadding),
                             topRight: Radius.circular(kMediumPadding))),
-                    child: Container(
+                    child: Form(
+                      key: _addProductFormKey,
                       child: Padding(
                           padding: const EdgeInsets.all(kDefaultPadding),
                           child: SingleChildScrollView(
@@ -166,34 +173,18 @@ class _InformationScreenState extends State<InformationScreen> {
                                     readOnly:
                                         true, //set it true, so that user will not able to edit text
                                     onTap: () async {
-                                      TimeOfDay? pickedTime =
-                                          await showTimePicker(
-                                        initialTime: TimeOfDay.now(),
-                                        context: context,
-                                      );
-
-                                      if (pickedTime != null) {
-                                        print(pickedTime
-                                            .format(context)); //output 10:51 PM
-                                        DateTime parsedTime = DateFormat.jm()
-                                            .parse(pickedTime
-                                                .format(context)
-                                                .toString());
-                                        //converting to DateTime so that we can further format on different pattern.
-                                        print(
-                                            parsedTime); //output 1970-01-01 22:53:00.000
-                                        String formattedTime =
-                                            DateFormat('HH:mm:ss')
-                                                .format(parsedTime);
-                                        print(formattedTime); //output 14:59:00
-                                        //DateFormat() is from intl package, you can format the time on any pattern you need.
-
+                                      DateTime? pikeddate =
+                                          await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime(2101));
+                                      if (pikeddate != null) {
                                         setState(() {
                                           timeinput.text =
-                                              formattedTime; //set the value of text field.
+                                              DateFormat('dd/MM/yyyy')
+                                                  .format(pikeddate);
                                         });
-                                      } else {
-                                        print("Time is not selected");
                                       }
                                     },
                                     autovalidateMode:
@@ -216,39 +207,60 @@ class _InformationScreenState extends State<InformationScreen> {
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    _image != null
-                                        ? Image.file(
-                                            _image!,
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : ImageHelper.loadFromAsset(
-                                            AssetsHelper.logo,
-                                            width: 100,
-                                            height: 110,
-                                            radius: BorderRadius.all(
-                                                Radius.circular(15)),
+                                images.isNotEmpty
+                                    ? CarouselSlider(
+                                        items: images.map(
+                                          (i) {
+                                            return Builder(
+                                              builder: (BuildContext context) =>
+                                                  Image.file(
+                                                i,
+                                                fit: BoxFit.cover,
+                                                height: 200,
+                                              ),
+                                            );
+                                          },
+                                        ).toList(),
+                                        options: CarouselOptions(
+                                          viewportFraction: 1,
+                                          height: 200,
+                                        ),
+                                      )
+                                    : GestureDetector(
+                                        onTap: selectImages,
+                                        child: DottedBorder(
+                                          borderType: BorderType.RRect,
+                                          radius: const Radius.circular(10),
+                                          dashPattern: const [10, 4],
+                                          strokeCap: StrokeCap.round,
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 150,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Icon(
+                                                  Icons.folder_open,
+                                                  size: 40,
+                                                ),
+                                                const SizedBox(height: 15),
+                                                Text(
+                                                  'Select Product Images',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.grey.shade400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    MaterialButton(
-                                        onPressed: _showDialog,
-                                        color: ColorPalette.primaryColor,
-                                        child: Text(
-                                          "Choose",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.white),
-                                        )),
-                                  ],
-                                ),
+                                        ),
+                                      ),
                                 SizedBox(height: kDefaultPadding * 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -257,10 +269,13 @@ class _InformationScreenState extends State<InformationScreen> {
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
-                                reusableTextFiledName(
-                                    "Description", _nameTextController, true),
+                                reusableTextFiledName("Description",
+                                    _descriptionTextController, true),
                                 SizedBox(height: kDefaultPadding * 2),
-                                ButtonWidget(title: "Add")
+                                ButtonWidget(
+                                  title: "Add",
+                                  onTap: addProduct,
+                                )
                               ],
                             ),
                           )),

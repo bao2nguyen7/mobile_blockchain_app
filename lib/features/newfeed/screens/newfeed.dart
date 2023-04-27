@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class NewFeedScreen extends StatefulWidget {
   const NewFeedScreen({super.key});
-  static String routeName = '/new_feed_screen';
+  static const String routeName = '/new_feed_screen';
   @override
   State<NewFeedScreen> createState() => _NewFeedScreenState();
 }

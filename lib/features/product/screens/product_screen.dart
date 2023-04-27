@@ -1,24 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 import 'package:mobile_app_blockchain/features/product/screens/infor_product_screen.dart';
-import 'package:mobile_app_blockchain/features/product/screens/information_screen.dart';
+import 'package:mobile_app_blockchain/features/product/screens/add_product_screen.dart';
 import 'package:mobile_app_blockchain/features/product/screens/updateInfor_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../core/helpers/assets_helper.dart';
 import '../../../core/helpers/image_helper.dart';
+import '../../../models/product.dart';
+import '../../../providers/user_providers.dart';
 import '../../widgets/btn_widget.dart';
+import '../../widgets/loader.dart';
+import '../../widgets/single_product.dart';
+import '../services/product_serviecs.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
-  static String routeName = '/product_screen';
+  static const String routeName = '/product_screen';
   @override
   State<ProductScreen> createState() => _ProductScreenState();
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  final ProductServices productServices = ProductServices();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<UserProvider>().user.products;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +40,7 @@ class _ProductScreenState extends State<ProductScreen> {
         centerTitle: true,
         titleSpacing: 20,
         title: Text(
-          "Product Details",
+          "Product",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
@@ -50,124 +64,96 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
               ),
               Expanded(
-                flex: 25,
-                child: Container(
-                  child: SafeArea(
-                    child: Container(
+                  flex: 25,
+                  child: Container(
+                    child: SafeArea(
+                      child: Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(kMediumPadding),
                                 topRight: Radius.circular(kMediumPadding))),
                         child: Padding(
-                          padding: const EdgeInsets.all(kDefaultPadding),
-                          child: Column(
-                            children: [
-                              // SizedBox(height: 5),
-                              Expanded(
-                                child: ListView.builder(
-                                    itemCount: stations.length,
-                                    scrollDirection: Axis.vertical,
-                                    physics: const BouncingScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      final item = stations[index];
-                                      return Card(
-                                        color:
-                                            Color.fromARGB(255, 246, 242, 242),
-                                        child: ListTile(
+                            padding: const EdgeInsets.all(kDefaultPadding),
+                            child: Container(
+                              child: user == null
+                                  ? Loader()
+                                  : GridView.builder(
+                                      itemCount: user!.length,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              mainAxisSpacing: 5),
+                                      itemBuilder: (context, index) {
+                                        final productData = user![index];
+                                        // return Column(
+                                        //   children: [
+                                        //     SizedBox(
+                                        //       height: 140,
+                                        //       child: SingleProduct(
+                                        //         image: productData.images[0],
+                                        //       ),
+                                        //     ),
+                                        //     Row(
+                                        //       mainAxisAlignment:
+                                        //           MainAxisAlignment.spaceEvenly,
+                                        //       children: [
+                                        //         Expanded(
+                                        //           child: Text(
+                                        //             productData.name,
+                                        //             overflow: TextOverflow.ellipsis,
+                                        //             maxLines: 2,
+                                        //           ),
+                                        //         ),
+                                        //         IconButton(
+                                        //           onPressed: () {},
+                                        //           // => deleteProduct(productData, index),
+                                        //           icon: const Icon(
+                                        //             Icons.delete_outline,
+                                        //           ),
+                                        //         ),
+                                        //       ],
+                                        //     ),
+                                        //   ],
+                                        // );
+                                        return GestureDetector(
                                           onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                                InforProductScreen.routeName);
-                                            print(Text("Hello"));
+                                            //here you can add youy action on grid element Tab
                                           },
-                                          leading: CircleAvatar(
-                                              backgroundColor: Color.fromARGB(
-                                                  255, 86, 222, 143),
-                                              child: Text(
-                                                '${item.id}',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              )),
-                                          title: Text(
-                                            '${item.product_name}',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w400),
+                                          child: Card(
+                                            child: Stack(
+                                              alignment:
+                                                  FractionalOffset.bottomCenter,
+                                              children: <Widget>[
+                                                SingleProduct(
+                                                    image:
+                                                        productData.images[0]),
+                                                Container(
+                                                  alignment: Alignment.center,
+                                                  height: 30.0,
+                                                  color: Color.fromARGB(
+                                                      255, 86, 198, 157),
+                                                  child: Text(
+                                                    productData.name,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 16.0,
+                                                        color: Colors.white),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                          subtitle: Text(
-                                              '${item.product_description}',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w300)),
-                                          trailing: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              IconButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context)
-                                                        .pushNamed(
-                                                            UpdateInformationScreen
-                                                                .routeName);
-                                                  },
-                                                  icon: const Icon(
-                                                    Icons.edit,
-                                                    color: Color.fromARGB(
-                                                        255, 105, 226, 155),
-                                                  )),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      stations.removeAt(index);
-                                                    });
-                                                  },
-                                                  icon: const Icon(Icons.delete,
-                                                      color: Color.fromARGB(
-                                                          255, 105, 226, 155))),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            ],
-                          ),
-                        )),
-                  ),
-                ),
-              )
+                                        );
+                                      },
+                                    ),
+                            )),
+                      ),
+                    ),
+                  ))
             ],
           )),
     );
   }
 }
-
-class Station {
-  int id;
-  String product_name;
-  String product_description;
-  Station(this.id, this.product_name, this.product_description);
-}
-
-List<Station> stations = [
-  Station(1, 'Orange', 'good'),
-  Station(2, 'Orange', 'bad'),
-  Station(3, 'Orange', 'bad'),
-  Station(4, 'Orange', 'bad'),
-  Station(5, 'Orange', 'bad'),
-  Station(6, 'Orange', 'bad'),
-  Station(7, 'Orange', 'bad'),
-  Station(8, 'Orange', 'bad'),
-  Station(9, 'Orange', 'bad'),
-  Station(10, 'Orange', 'bad'),
-  Station(11, 'Orange', 'bad'),
-  Station(12, 'Orange', 'good'),
-  Station(13, 'Orange', 'good'),
-  Station(14, 'Orange', 'good'),
-  Station(15, 'Orange', 'good'),
-  Station(16, 'Orange', 'good'),
-  Station(17, 'Orange', 'good'),
-  Station(18, 'Orange', 'good'),
-  Station(19, 'Orange', 'good'),
-  Station(20, 'Orange', 'good'),
-  Station(21, 'Orange', 'good'),
-];

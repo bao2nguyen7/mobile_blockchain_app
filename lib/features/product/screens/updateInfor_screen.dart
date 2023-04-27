@@ -16,7 +16,7 @@ import '../../../core/constants/dismenssion_constants.dart';
 
 class UpdateInformationScreen extends StatefulWidget {
   const UpdateInformationScreen({super.key});
-  static String routeName = '/update_information_screen';
+  static const String routeName = '/update_information_screen';
   @override
   State<UpdateInformationScreen> createState() =>
       _UpdateInformationScreenState();

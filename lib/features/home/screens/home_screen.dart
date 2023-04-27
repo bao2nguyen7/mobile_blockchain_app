@@ -3,15 +3,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 import 'package:mobile_app_blockchain/core/constants/textstyle_constants.dart';
 import 'package:mobile_app_blockchain/features/widgets/listView_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../core/helpers/assets_helper.dart';
 import '../../../core/helpers/image_helper.dart';
+import '../../../providers/user_providers.dart';
+import '../../product/screens/add_product_screen.dart';
 import '../../widgets/btn_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  static String routeName = '/home_screen';
+  static const String routeName = '/home_screen';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -20,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: ColorPalette.primaryColor,
@@ -38,47 +42,59 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   color: ColorPalette.primaryColor,
                   child: Padding(
-                    padding: const EdgeInsets.all(30),
-                    child: Row(children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 35),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text('Hi James',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 20)),
-                            SizedBox(height: kItemPadding),
-                            Text(
-                              'Have a good day',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14),
-                            )
-                          ],
-                        ),
-                      ),
-                      Spacer(),
-                      SizedBox(width: kMinPadding),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 35),
-                        child: Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                              Radius.circular(kItemPadding),
-                            )),
-                            padding: EdgeInsets.all(kItemPadding),
-                            child: ImageHelper.loadFromAsset(
-                                AssetsHelper.account)),
-                      )
-                    ]),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 30, horizontal: 30),
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 35),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                      text: "Hi, ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          fontSize: 20),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: user.name,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                fontSize: 18))
+                                      ]),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Have a good day',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 30),
+                            child: Container(
+                                width: 65,
+                                height: 65,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                  Radius.circular(kItemPadding),
+                                )),
+                                padding: EdgeInsets.all(kItemPadding),
+                                child: ImageHelper.loadFromAsset(
+                                    AssetsHelper.account)),
+                          )
+                        ]),
                   ),
                 ),
               ),
-              SizedBox(height: kDefaultPadding / 2),
               Expanded(
                 flex: 8,
                 child: Container(
@@ -103,7 +119,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     title: 'Create QR Code',
                                     image: ImageHelper.loadFromAsset(
                                         AssetsHelper.qr_code),
-                                    onTap: () {}),
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                          AddProductScreen.routeName);
+                                    }),
                                 SizedBox(width: 40),
                                 BtnWidget(
                                     title: 'Choose planting process',
@@ -133,17 +152,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text('ID',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.w600)),
                                             Text('Name',
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontWeight:
                                                         FontWeight.w600)),
-                                            Text('Code',
+                                            Text('Time',
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w600)),
+                                            Text('Status',
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontWeight:
@@ -153,19 +172,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       Expanded(
                                           child: ListView.builder(
-                                              itemCount: stations.length,
+                                              itemCount: user.products.length,
                                               itemBuilder: (context, index) {
-                                                final item = stations[index];
+                                                final item =
+                                                    user.products[index];
                                                 return ListTile(
                                                   title: Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text('${item.id}'),
-                                                        Text(item.product_name),
-                                                        Text(
-                                                            '${item.product_code}')
+                                                        // Text('${item.}'),
+                                                        Text(item.name),
+                                                        Text(item.time)
+                                                        // Text(
+                                                        //     '${item.product_code}')
                                                       ]),
                                                 );
                                               }))

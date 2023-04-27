@@ -21,12 +21,12 @@ class AuthService {
   }) async {
     try {
       User user = User(
-        id: '',
-        name: name,
-        password: password,
-        email: email,
-        token: '',
-      );
+          id: '',
+          name: name,
+          password: password,
+          email: email,
+          token: '',
+          products: []);
       http.Response res = await http.post(
         Uri.parse('${Constants.uri}/signup'),
         body: user.toJson(),
@@ -88,6 +88,7 @@ class AuthService {
     }
   }
 
+  //Sign Out User
   void SignOutUser(BuildContext context) async {
     final navigator = Navigator.of(context);
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -95,5 +96,43 @@ class AuthService {
     navigator.pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginScreen()),
         (route) => false);
+  }
+
+  //getUserData
+  void getUserData(
+    BuildContext context,
+  ) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('x-auth-token');
+      if (token == null) {
+        prefs.setString('x-auth-token', '');
+      }
+
+      var tokenRes = await http.post(
+        Uri.parse('${Constants.uri}/tokenIsValid'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token!
+        },
+      );
+
+      var response = jsonDecode(tokenRes.body);
+
+      if (response == true) {
+        http.Response userRes = await http.get(
+          Uri.parse('${Constants.uri}/'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': token
+          },
+        );
+
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.setUser(userRes.body);
+      }
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
   }
 }

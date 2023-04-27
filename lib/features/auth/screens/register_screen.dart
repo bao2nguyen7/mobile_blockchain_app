@@ -13,7 +13,7 @@ import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
-  static String routeName = '/register_screen';
+  static const String routeName = '/register_screen';
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }

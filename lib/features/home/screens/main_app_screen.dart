@@ -2,7 +2,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app_blockchain/features/home/screens/home_screen.dart';
-import 'package:mobile_app_blockchain/features/product/screens/information_screen.dart';
+import 'package:mobile_app_blockchain/features/product/screens/add_product_screen.dart';
 import 'package:mobile_app_blockchain/features/newfeed/screens/newfeed.dart';
 import 'package:mobile_app_blockchain/features/product/screens/product_screen.dart';
 import 'package:mobile_app_blockchain/features/auth/screens/profile.screen.dart';
@@ -14,7 +14,7 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class MainAppScreen extends StatefulWidget {
   const MainAppScreen({super.key});
-  static String routeName = '/main_app_screen';
+  static const String routeName = '/main_app_screen';
   @override
   State<MainAppScreen> createState() => _MainAppScreenState();
 }

@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'BlockchainApp',
       routes: routes,
+      // onGenerateRoute: (settings) => generateRoute(settings),
       theme: ThemeData(
         primaryColor: ColorPalette.primaryColor,
         scaffoldBackgroundColor: Colors.white,

@@ -12,7 +12,7 @@ import '../../../core/constants/textstyle_constants.dart';
 
 class InforProductScreen extends StatefulWidget {
   const InforProductScreen({super.key});
-  static String routeName = '/infor_product_screen';
+  static const String routeName = '/infor_product_screen';
   @override
   State<InforProductScreen> createState() => _InforProductScreenState();
 }
