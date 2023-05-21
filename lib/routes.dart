@@ -6,14 +6,22 @@ import 'package:mobile_app_blockchain/features/qrcode/screens/qrcode_screen.dart
 import 'package:mobile_app_blockchain/features/admin/screens/intro_screen.dart';
 import 'package:mobile_app_blockchain/features/home/screens/main_app_screen.dart';
 import 'package:mobile_app_blockchain/features/product/screens/product_screen.dart';
-import 'package:mobile_app_blockchain/features/auth/screens/profile.screen.dart';
+
 import 'package:mobile_app_blockchain/features/newfeed/screens/newfeed.dart';
 import 'package:mobile_app_blockchain/features/auth/screens/register_screen.dart';
-import 'package:mobile_app_blockchain/features/product/screens/updateInfor_screen.dart';
+import 'package:mobile_app_blockchain/features/product/screens/add_tracking_screen.dart';
 import 'package:mobile_app_blockchain/models/user.dart';
 
 import 'features/auth/screens/login_screen.dart';
 import 'features/admin/screens/splash_screen.dart';
+import 'features/user/home_user/screens/home_screen.dart';
+import 'features/user/home_user/screens/main_app_screen.dart';
+import 'features/newfeed/screens/newfeed_detail.dart';
+import 'features/product/screens/detail_product_screen.dart';
+import 'features/product/screens/tracking_detail.dart';
+import 'features/profile/profile_detail_screen.dart';
+import 'features/profile/profile_screen.dart';
+import 'features/qrcode/screens/qrcode_result.dart';
 
 final Map<String, WidgetBuilder> routes = {
   SplashScreen.routeName: (context) => const SplashScreen(),
@@ -21,93 +29,16 @@ final Map<String, WidgetBuilder> routes = {
   LoginScreen.routeName: (context) => const LoginScreen(),
   RegisterScreen.routeName: (context) => const RegisterScreen(),
   MainAppScreen.routeName: (context) => const MainAppScreen(),
+  MainAppUserScreen.routeName: (context) => const MainAppUserScreen(),
   HomeScreen.routeName: (context) => const HomeScreen(),
+  HomeUserScreen.routeName: (context) => const HomeUserScreen(),
   ProductScreen.routeName: (context) => const ProductScreen(),
   QRCodeScreen.routeName: (context) => const QRCodeScreen(),
+  QRCodeResultScreen.routeName: (context) => const QRCodeResultScreen(),
   AddProductScreen.routeName: (context) => const AddProductScreen(),
   ProfileScreen.routeName: (context) => const ProfileScreen(),
+  ProfileDetailScreen.routeName: (context) => const ProfileDetailScreen(),
   InforProductScreen.routeName: (context) => const InforProductScreen(),
   NewFeedScreen.routeName: (context) => const NewFeedScreen(),
-  UpdateInformationScreen.routeName: (context) =>
-      const UpdateInformationScreen(),
+  NewFeedDetailScreen.routeName: (context) => const NewFeedDetailScreen(),
 };
-
-// Route<dynamic> generateRoute(RouteSettings routeSettings) {
-//   switch (routeSettings.name) {
-//     case SplashScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => const SplashScreen(),
-//       );
-
-//     case IntroScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => const IntroScreen(),
-//       );
-//     case LoginScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => const LoginScreen(),
-//       );
-//     case RegisterScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => const RegisterScreen(),
-//       );
-
-//     case MainAppScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => MainAppScreen(),
-//       );
-//     case HomeScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => HomeScreen(),
-//       );
-//     case ProductScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => ProductScreen(),
-//       );
-//     case QRCodeScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => QRCodeScreen(),
-//       );
-//     case ProfileScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => ProfileScreen(),
-//       );
-//     case InforProductScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => InforProductScreen(),
-//       );
-//     case NewFeedScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => NewFeedScreen(),
-//       );
-//     case UpdateInformationScreen.routeName:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => UpdateInformationScreen(),
-//       );
-//     case AddProductScreen.routeName:
-//       var user = routeSettings.arguments as User;
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => AddProductScreen(user: user),
-//       );
-//     default:
-//       return MaterialPageRoute(
-//         settings: routeSettings,
-//         builder: (_) => const Scaffold(
-//           body: Center(
-//             child: Text('Screen does not exist!'),
-//           ),
-//         ),
-//       );

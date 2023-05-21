@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
-import 'package:mobile_app_blockchain/features/product/screens/updateInfor_screen.dart';
+import 'package:mobile_app_blockchain/features/product/screens/add_tracking_screen.dart';
 import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
 
 import '../../../core/constants/color_constants.dart';

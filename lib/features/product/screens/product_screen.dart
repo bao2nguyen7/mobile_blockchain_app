@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 import 'package:mobile_app_blockchain/features/product/screens/infor_product_screen.dart';
 import 'package:mobile_app_blockchain/features/product/screens/add_product_screen.dart';
-import 'package:mobile_app_blockchain/features/product/screens/updateInfor_screen.dart';
+import 'package:mobile_app_blockchain/features/product/screens/add_tracking_screen.dart';
+import 'package:mobile_app_blockchain/features/product/screens/update_product_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/dismenssion_constants.dart';
@@ -10,10 +12,12 @@ import '../../../core/helpers/assets_helper.dart';
 import '../../../core/helpers/image_helper.dart';
 import '../../../models/product.dart';
 import '../../../providers/user_providers.dart';
+import '../../home/screens/main_app_screen.dart';
 import '../../widgets/btn_widget.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/single_product.dart';
 import '../services/product_serviecs.dart';
+import 'detail_product_screen.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
@@ -28,15 +32,63 @@ class _ProductScreenState extends State<ProductScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    fetchProduct();
+  }
+
+  bool isLoading = true;
+  List<Product>? product;
+  Future fetchProduct() async {
+    product = await productServices.fetchAllProducts(context: context);
+    setState(() {});
+    // print(product);
+  }
+
+  void deleteProduct(String _id) {
+    productServices.deleteProduct(context: context, id: _id);
+    setState(() {});
+    // print(product);
+  }
+
+  void _showAlertDialog(BuildContext context, Product product) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Choose'),
+        content: const Text('You choose?'),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            /// This parameter indicates this action is the default,
+            /// and turns the action's text to bold text.
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UpdateProductScreen(
+                            product: product,
+                          )));
+              // Navigator.pop(context);
+            },
+            child: const Text('Edit'),
+          ),
+          CupertinoDialogAction(
+            /// This parameter indicates the action would perform
+            /// a destructive action such as deletion, and turns
+            /// the action's text color to red.
+            isDestructiveAction: true,
+            onPressed: () => deleteProduct(product.id),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<UserProvider>().user.products;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         centerTitle: true,
         titleSpacing: 20,
         title: Text(
@@ -53,7 +105,7 @@ class _ProductScreenState extends State<ProductScreen> {
             maxWidth: size.width,
           ),
           decoration: BoxDecoration(
-            color: ColorPalette.primaryColor,
+            color: Colors.white,
           ),
           child: Column(
             children: [
@@ -66,92 +118,232 @@ class _ProductScreenState extends State<ProductScreen> {
               Expanded(
                   flex: 25,
                   child: Container(
-                    child: SafeArea(
+                      child: SafeArea(
+                          child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(kMediumPadding),
+                            topRight: Radius.circular(kMediumPadding))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(kDefaultPadding),
                       child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(kMediumPadding),
-                                topRight: Radius.circular(kMediumPadding))),
-                        child: Padding(
-                            padding: const EdgeInsets.all(kDefaultPadding),
-                            child: Container(
-                              child: user == null
-                                  ? Loader()
-                                  : GridView.builder(
-                                      itemCount: user!.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2,
-                                              mainAxisSpacing: 5),
-                                      itemBuilder: (context, index) {
-                                        final productData = user![index];
-                                        // return Column(
-                                        //   children: [
-                                        //     SizedBox(
-                                        //       height: 140,
-                                        //       child: SingleProduct(
-                                        //         image: productData.images[0],
-                                        //       ),
-                                        //     ),
-                                        //     Row(
-                                        //       mainAxisAlignment:
-                                        //           MainAxisAlignment.spaceEvenly,
-                                        //       children: [
-                                        //         Expanded(
-                                        //           child: Text(
-                                        //             productData.name,
-                                        //             overflow: TextOverflow.ellipsis,
-                                        //             maxLines: 2,
-                                        //           ),
-                                        //         ),
-                                        //         IconButton(
-                                        //           onPressed: () {},
-                                        //           // => deleteProduct(productData, index),
-                                        //           icon: const Icon(
-                                        //             Icons.delete_outline,
-                                        //           ),
-                                        //         ),
-                                        //       ],
-                                        //     ),
-                                        //   ],
-                                        // );
-                                        return GestureDetector(
-                                          onTap: () {
-                                            //here you can add youy action on grid element Tab
-                                          },
-                                          child: Card(
-                                            child: Stack(
-                                              alignment:
-                                                  FractionalOffset.bottomCenter,
-                                              children: <Widget>[
-                                                SingleProduct(
-                                                    image:
-                                                        productData.images[0]),
-                                                Container(
-                                                  alignment: Alignment.center,
-                                                  height: 30.0,
-                                                  color: Color.fromARGB(
-                                                      255, 86, 198, 157),
-                                                  child: Text(
-                                                    productData.name,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontSize: 16.0,
-                                                        color: Colors.white),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
+                        child: product == null
+                            ? Loader()
+                            : Visibility(
+                                visible: isLoading,
+                                child: RefreshIndicator(
+                                  onRefresh: fetchProduct,
+                                  child: GridView.builder(
+                                    itemCount: product!.length,
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 8,
                                     ),
-                            )),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 0.8,
+                                      crossAxisSpacing: 20,
+                                      mainAxisSpacing: 24,
+                                    ),
+                                    itemBuilder: (context, index) {
+                                      final productData = product![index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DeatilProductScreen(
+                                                        product: productData,
+                                                      )));
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(.1),
+                                                blurRadius: 4.0,
+                                                spreadRadius: .05,
+                                              ), //BoxShadow
+                                            ],
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Stack(
+                                                children: [
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: SingleProduct(
+                                                        image: productData
+                                                            .images[0],
+                                                        height: 120),
+                                                  ),
+                                                  Transform.translate(
+                                                      offset: Offset(50, -40),
+                                                      child: Container(
+                                                        margin: const EdgeInsets
+                                                                .symmetric(
+                                                            horizontal: 60,
+                                                            vertical: 55),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            color:
+                                                                Colors.white),
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            showModalBottomSheet(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return Container(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: Colors
+                                                                              .grey[
+                                                                          300],
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20),
+                                                                    ),
+                                                                    height: 170,
+                                                                    padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                        horizontal:
+                                                                            20),
+                                                                    child:
+                                                                        Container(
+                                                                      margin: const EdgeInsets
+                                                                              .only(
+                                                                          top:
+                                                                              20),
+                                                                      child: ListView(
+                                                                          children: [
+                                                                            GestureDetector(
+                                                                              onTap: () {
+                                                                                Navigator.push(
+                                                                                    context,
+                                                                                    MaterialPageRoute(
+                                                                                        builder: (context) => UpdateProductScreen(
+                                                                                              product: productData,
+                                                                                            )));
+                                                                              },
+                                                                              child: Container(
+                                                                                height: 50,
+                                                                                width: 230,
+                                                                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Color.fromARGB(255, 166, 236, 138)),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                  child: Row(children: [
+                                                                                    Icon(Icons.edit),
+                                                                                    SizedBox(
+                                                                                      width: 30,
+                                                                                    ),
+                                                                                    Text(
+                                                                                      "Edit",
+                                                                                      style: Theme.of(context).textTheme.labelLarge,
+                                                                                    )
+                                                                                  ]),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 18,
+                                                                            ),
+                                                                            GestureDetector(
+                                                                              onTap: () => deleteProduct(productData.id),
+                                                                              child: Container(
+                                                                                height: 50,
+                                                                                width: 230,
+                                                                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Color.fromARGB(255, 226, 132, 132)),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                  child: Row(children: [
+                                                                                    Icon(Icons.delete),
+                                                                                    SizedBox(
+                                                                                      width: 30,
+                                                                                    ),
+                                                                                    Text(
+                                                                                      "Delete",
+                                                                                      style: Theme.of(context).textTheme.labelLarge,
+                                                                                    )
+                                                                                  ]),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ]),
+                                                                    ),
+                                                                  );
+                                                                });
+                                                          },
+                                                          // _showAlertDialog(
+                                                          //     context,
+                                                          //     productData),
+                                                          child: Icon(Icons
+                                                              .keyboard_control_outlined),
+                                                        ),
+                                                      )),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Align(
+                                                alignment: Alignment.center,
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      productData.name,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelLarge,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                            Icons.add_location),
+                                                        SizedBox(width: 5),
+                                                        Text(
+                                                          productData.address,
+                                                          style: TextStyle(
+                                                              fontSize: 10),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )),
                       ),
                     ),
-                  ))
+                  ))))
             ],
           )),
     );

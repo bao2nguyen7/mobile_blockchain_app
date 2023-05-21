@@ -8,6 +8,7 @@ class User {
   final String name;
   final String email;
   final String password;
+  final String userType;
   final String token;
   final List<Product> products;
   User({
@@ -16,6 +17,7 @@ class User {
     required this.email,
     required this.password,
     required this.token,
+    required this.userType,
     required this.products,
   });
 
@@ -25,6 +27,7 @@ class User {
       'name': name,
       'email': email,
       'password': password,
+      'userType': userType,
       'token': token,
       'products': products.map((product) => product.toMap()).toList()
     };
@@ -36,6 +39,7 @@ class User {
     final email = map['email'] as String;
     final password = map['password'] as String;
     final token = map['token'] as String;
+    final userType = map['userType'] as String;
     final productsData = map['products'] as List<dynamic>?;
     final products = productsData != null
         ? productsData
@@ -47,6 +51,7 @@ class User {
         name: name,
         email: email,
         password: password,
+        userType: userType,
         token: token,
         products: products);
   }
@@ -61,6 +66,7 @@ class User {
     String? name,
     String? email,
     String? password,
+    String? userType,
     String? token,
     List<Product>? products,
   }) {
@@ -70,6 +76,7 @@ class User {
       email: email ?? this.email,
       password: password ?? this.password,
       token: token ?? this.token,
+      userType: token ?? this.userType,
       products: products ?? this.products,
     );
   }

@@ -53,5 +53,10 @@
 	<string>Take photo from camera.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We want image for product!</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

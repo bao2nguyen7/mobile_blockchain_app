@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
-  User _user =
-      User(id: '', name: '', email: '', password: '', token: '', products: []);
+  User _user = User(
+      id: '',
+      name: '',
+      email: '',
+      password: '',
+      token: '',
+      userType: '',
+      products: []);
 
   User get user => _user;
 

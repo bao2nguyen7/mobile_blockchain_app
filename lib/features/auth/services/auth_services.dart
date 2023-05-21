@@ -9,6 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../providers/user_providers.dart';
 import '../../../utils/constans.dart';
 import '../../home/screens/main_app_screen.dart';
+import '../../user/home_user/screens/home_screen.dart';
+import '../../user/home_user/screens/main_app_screen.dart';
+import '../../newfeed/screens/newfeed.dart';
 import '../screens/login_screen.dart';
 
 class AuthService {
@@ -18,6 +21,7 @@ class AuthService {
     required String email,
     required String password,
     required String name,
+    required String userType,
   }) async {
     try {
       User user = User(
@@ -25,6 +29,7 @@ class AuthService {
           name: name,
           password: password,
           email: email,
+          userType: userType,
           token: '',
           products: []);
       http.Response res = await http.post(
@@ -42,6 +47,7 @@ class AuthService {
             context,
             'Account created! Login with the same credentials!',
           );
+          Navigator.pop(context);
         },
       );
     } catch (e) {
@@ -75,12 +81,21 @@ class AuthService {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           userProvider.setUser(res.body);
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
-          navigator.pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => const MainAppScreen(),
-            ),
-            (route) => false,
-          );
+          if (jsonDecode(res.body)['userType'] == "Farmer") {
+            navigator.pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => const MainAppScreen(),
+              ),
+              (route) => false,
+            );
+          } else if (jsonDecode(res.body)['userType'] == "User") {
+            navigator.pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => const MainAppUserScreen(),
+              ),
+              (route) => false,
+            );
+          }
         },
       );
     } catch (e) {

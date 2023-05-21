@@ -24,8 +24,7 @@ class BtnWidget extends StatelessWidget {
             width: kMaxbtnSize,
             height: kMaxbtnSize,
             decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(kDefaultPadding)),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
                 color: ColorPalette.primaryColor),
             child: Column(
               children: [

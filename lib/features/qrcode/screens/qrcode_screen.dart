@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
+import 'package:mobile_app_blockchain/features/qrcode/screens/qrcode_result.dart';
+
+import '../../home/screens/main_app_screen.dart';
+import '../../product/screens/detail_product_screen.dart';
 
 class QRCodeScreen extends StatefulWidget {
   const QRCodeScreen({super.key});
@@ -11,7 +15,21 @@ class QRCodeScreen extends StatefulWidget {
 }
 
 class _QRCodeScreenState extends State<QRCodeScreen> {
-  String? scanResult;
+  String? scanResult = "";
+  String? scan;
+  Future scanBarCode() async {
+    try {
+      scan = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', "Cancel", true, ScanMode.QR);
+      setState(() {
+        scanResult = scan;
+      });
+      Navigator.of(context).pushNamed(QRCodeResultScreen.routeName);
+    } on PlatformException {
+      scanResult = "Fail";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,15 +61,5 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
         ),
       ),
     );
-  }
-
-  Future scanBarCode() async {
-    String scanResult;
-    try {
-      scanResult = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', "Cancel", true, ScanMode.BARCODE);
-    } on PlatformException {
-      scanResult = "Fail";
-    }
   }
 }

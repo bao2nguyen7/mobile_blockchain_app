@@ -65,6 +65,42 @@ class _AddProductScreenState extends State<AddProductScreen> {
     });
   }
 
+  DateTime _chosenDateTime = DateTime.now();
+
+  // Show the modal that contains the CupertinoDatePicker
+  void _showDatePicker(ctx) {
+    // showCupertinoModalPopup is a built-in function of the cupertino library
+    showCupertinoModalPopup(
+        context: ctx,
+        builder: (_) => Container(
+              height: 500,
+              color: const Color.fromARGB(255, 255, 255, 255),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 400,
+                    child: CupertinoDatePicker(
+                      initialDateTime: _chosenDateTime,
+                      onDateTimeChanged: (DateTime val) {
+                        setState(() {
+                          _chosenDateTime = val;
+                          timeinput.text = _chosenDateTime.toString();
+                        });
+                      },
+                      mode: CupertinoDatePickerMode.dateAndTime,
+                    ),
+                  ),
+
+                  // Close the modal
+                  CupertinoButton(
+                    child: const Text('OK'),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  )
+                ],
+              ),
+            ));
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -172,33 +208,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     keyboardType: TextInputType.emailAddress,
                                     readOnly:
                                         true, //set it true, so that user will not able to edit text
-                                    onTap: () async {
-                                      DateTime? pikeddate =
-                                          await showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime(2000),
-                                              lastDate: DateTime(2101));
-                                      if (pikeddate != null) {
-                                        setState(() {
-                                          timeinput.text =
-                                              DateFormat('dd/MM/yyyy')
-                                                  .format(pikeddate);
-                                        });
-                                      }
-                                    },
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    // The validator receives the text that the user has entered.
-                                    validator: (text) {
-                                      if (text == null || text.isEmpty) {
-                                        return 'Can\'t be empty';
-                                      }
-                                      if (text.length < 2) {
-                                        return 'Too short';
-                                      }
-                                      return null;
-                                    }),
+                                    onTap: () => _showDatePicker(context)),
                                 SizedBox(height: kDefaultPadding * 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,

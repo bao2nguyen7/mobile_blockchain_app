@@ -12,6 +12,7 @@ import 'package:mobile_app_blockchain/features/widgets/textfiled_widget.dart';
 
 import '../../../core/helpers/assets_helper.dart';
 import '../../../core/helpers/image_helper.dart';
+import '../../admin/screens/intro_screen.dart';
 import '../../home/screens/home_screen.dart';
 import '../services/auth_services.dart';
 
@@ -38,13 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: ColorPalette.primaryColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: ColorPalette.primaryColor,
         leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pushNamed(IntroScreen.routeName);
             },
             icon: Icon(
               FontAwesomeIcons.arrowLeft,

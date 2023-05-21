@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:mobile_app_blockchain/core/constants/dismenssion_constants.dart';
 import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
 import 'package:mobile_app_blockchain/features/auth/screens/login_screen.dart';
 import 'package:mobile_app_blockchain/features/qrcode/screens/qrcode_screen.dart';
 import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
+
+import '../../qrcode/screens/qrcode_result.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -14,6 +18,24 @@ class IntroScreen extends StatefulWidget {
 }
 
 class _IntroScreenState extends State<IntroScreen> {
+  String? scanResult = "";
+  Future scanBarCode() async {
+    String scanResult;
+    try {
+      scanResult = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', "Cancel", true, ScanMode.QR);
+      print(scanResult);
+      if (scanResult != -1) {
+        Navigator.of(context).pushNamed(QRCodeResultScreen.routeName,
+            arguments: DetailsArguments(id: scanResult));
+      }
+    } on PlatformException {
+      scanResult = "Fail";
+    }
+    if (!mounted) return;
+    setState(() => this.scanResult = scanResult);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,10 +77,7 @@ class _IntroScreenState extends State<IntroScreen> {
                       opacity: 0.8,
                       child: ButtonWidget(
                         title: 'QR Code ',
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(QRCodeScreen.routeName);
-                        },
+                        onTap: scanBarCode,
                       ),
                     )
                   ],

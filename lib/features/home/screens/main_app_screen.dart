@@ -5,12 +5,14 @@ import 'package:mobile_app_blockchain/features/home/screens/home_screen.dart';
 import 'package:mobile_app_blockchain/features/product/screens/add_product_screen.dart';
 import 'package:mobile_app_blockchain/features/newfeed/screens/newfeed.dart';
 import 'package:mobile_app_blockchain/features/product/screens/product_screen.dart';
-import 'package:mobile_app_blockchain/features/auth/screens/profile.screen.dart';
+import 'package:mobile_app_blockchain/features/profile/profile_screen.dart';
 import 'package:mobile_app_blockchain/features/qrcode/screens/qrcode_screen.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/dismenssion_constants.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
+import '../../qrcode/screens/qrcode_result.dart';
 
 class MainAppScreen extends StatefulWidget {
   const MainAppScreen({super.key});
@@ -43,7 +45,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).pushNamed(QRCodeScreen.routeName);
+            Navigator.of(context).pushNamed(QRCodeResultScreen.routeName);
           },
           backgroundColor: ColorPalette.primaryColor,
           child: const Icon(Icons.qr_code_2),
