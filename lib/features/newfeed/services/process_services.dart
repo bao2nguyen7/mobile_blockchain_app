@@ -28,6 +28,7 @@ class ProcessServices {
           // print(json["data"]["products"]);
           for (int i = 0; i < result.length; i++) {
             processList.add(Process.fromJson(jsonEncode(result[i])));
+            print(processList);
           }
         },
       );

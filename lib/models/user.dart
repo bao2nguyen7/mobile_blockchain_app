@@ -10,7 +10,7 @@ class User {
   final String password;
   final String userType;
   final String token;
-  final List<Product> products;
+  final List<String> products;
   User({
     required this.id,
     required this.name,
@@ -29,7 +29,7 @@ class User {
       'password': password,
       'userType': userType,
       'token': token,
-      'products': products.map((product) => product.toMap()).toList()
+      'products': products
     };
   }
 
@@ -40,12 +40,13 @@ class User {
     final password = map['password'] as String;
     final token = map['token'] as String;
     final userType = map['userType'] as String;
-    final productsData = map['products'] as List<dynamic>?;
-    final products = productsData != null
-        ? productsData
-            .map((productData) => Product.fromMap(productData))
-            .toList()
-        : <Product>[];
+    final products = List<String>.from((map['products'] as List<dynamic>));
+    // final productsData = map['products'] as List<String>;
+    // final products = productsData != null
+    //     ? productsData
+    //         .map((productData) => Product.fromMap(productData["id"))
+    //         .toList()
+    //     : <Product>[];
     return User(
         id: id,
         name: name,
@@ -68,15 +69,15 @@ class User {
     String? password,
     String? userType,
     String? token,
-    List<Product>? products,
+    List<String>? products,
   }) {
     return User(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       password: password ?? this.password,
+      userType: userType ?? this.userType,
       token: token ?? this.token,
-      userType: token ?? this.userType,
       products: products ?? this.products,
     );
   }

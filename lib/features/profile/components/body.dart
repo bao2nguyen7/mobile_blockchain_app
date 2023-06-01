@@ -3,7 +3,7 @@ import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
 
 import '../../auth/services/auth_services.dart';
-import '../profile_detail_screen.dart';
+import '../screens/profile_detail_screen.dart';
 import 'profile_menu.dart';
 import 'profile_pic.dart';
 

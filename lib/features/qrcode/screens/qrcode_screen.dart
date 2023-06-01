@@ -24,7 +24,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
       setState(() {
         scanResult = scan;
       });
-      Navigator.of(context).pushNamed(QRCodeResultScreen.routeName);
+      // Navigator.of(context).pushNamed(QRCodeResultScreen.routeName);
     } on PlatformException {
       scanResult = "Fail";
     }

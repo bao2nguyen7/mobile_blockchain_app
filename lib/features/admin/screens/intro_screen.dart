@@ -26,8 +26,12 @@ class _IntroScreenState extends State<IntroScreen> {
           '#ff6666', "Cancel", true, ScanMode.QR);
       print(scanResult);
       if (scanResult != -1) {
-        Navigator.of(context).pushNamed(QRCodeResultScreen.routeName,
-            arguments: DetailsArguments(id: scanResult));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => QRCodeResultScreen(
+                      id: scanResult,
+                    )));
       }
     } on PlatformException {
       scanResult = "Fail";
@@ -59,7 +63,7 @@ class _IntroScreenState extends State<IntroScreen> {
                         padding: EdgeInsets.all(kMaxIconSize),
                         child: Container(
                           child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30.0),
+                              borderRadius: BorderRadius.circular(20.0),
                               child:
                                   ImageHelper.loadFromAsset(AssetsHelper.logo)),
                         ),

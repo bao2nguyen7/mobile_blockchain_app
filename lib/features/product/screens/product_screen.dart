@@ -49,41 +49,6 @@ class _ProductScreenState extends State<ProductScreen> {
     // print(product);
   }
 
-  void _showAlertDialog(BuildContext context, Product product) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Choose'),
-        content: const Text('You choose?'),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            /// This parameter indicates this action is the default,
-            /// and turns the action's text to bold text.
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UpdateProductScreen(
-                            product: product,
-                          )));
-              // Navigator.pop(context);
-            },
-            child: const Text('Edit'),
-          ),
-          CupertinoDialogAction(
-            /// This parameter indicates the action would perform
-            /// a destructive action such as deletion, and turns
-            /// the action's text color to red.
-            isDestructiveAction: true,
-            onPressed: () => deleteProduct(product.id),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -105,7 +70,7 @@ class _ProductScreenState extends State<ProductScreen> {
             maxWidth: size.width,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ColorPalette.primaryColor,
           ),
           child: Column(
             children: [
@@ -118,8 +83,8 @@ class _ProductScreenState extends State<ProductScreen> {
               Expanded(
                   flex: 25,
                   child: Container(
-                      child: SafeArea(
-                          child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -191,7 +156,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                         height: 120),
                                                   ),
                                                   Transform.translate(
-                                                      offset: Offset(50, -40),
+                                                      offset: Offset(60, -40),
                                                       child: Container(
                                                         margin: const EdgeInsets
                                                                 .symmetric(
@@ -310,11 +275,30 @@ class _ProductScreenState extends State<ProductScreen> {
                                                 alignment: Alignment.center,
                                                 child: Column(
                                                   children: [
-                                                    Text(
-                                                      productData.name,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .labelLarge,
+                                                    Container(
+                                                      height: 15,
+                                                      width: 140,
+                                                      child: FittedBox(
+                                                        fit: BoxFit.scaleDown,
+                                                        child: Text(
+                                                          productData.name,
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .displayMedium,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    // Text(
+                                                    //   productData.name,
+                                                    //   style: Theme.of(context)
+                                                    //       .textTheme
+                                                    //       .labelLarge,
+                                                    // ),
+                                                    const SizedBox(
+                                                      height: 10,
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
@@ -343,7 +327,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                 )),
                       ),
                     ),
-                  ))))
+                  ))
             ],
           )),
     );

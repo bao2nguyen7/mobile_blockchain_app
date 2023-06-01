@@ -1,11 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:card_swiper/card_swiper.dart';
+import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../models/tracking.dart';
 import '../../../utils/constans.dart';
+import '../../../utils/utils.dart';
 
 class TrackingDetailScreen extends StatefulWidget {
   Tracking tracking;
@@ -18,6 +23,19 @@ class TrackingDetailScreen extends StatefulWidget {
 }
 
 class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
+  _launchURL() async {
+    String url = widget.tracking.url;
+    var urllaunchable =
+        await canLaunch(url); //canLaunch is from url_launcher package
+    if (urllaunchable) {
+      await launch(url); //launch is from url_launcher package to launch URL
+    } else {
+      print("URL can't be launched.");
+      ;
+      showSnackBar(context, "URL can't be launched");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,22 +50,71 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: 200.0,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  //let's add the height
-
-                  image: DecorationImage(
-                      image: NetworkImage(widget.tracking.images.length != 0
-                          ? widget.tracking.images[0]
-                          : Constants.loading),
-                      fit: BoxFit.cover),
-                  borderRadius: BorderRadius.circular(12.0),
+              SizedBox(
+                height: 250,
+                child: Swiper(
+                  itemBuilder: (BuildContext context, int index) {
+                    return FancyShimmerImage(
+                      width: double.infinity,
+                      imageUrl: widget.tracking!.images![index].toString(),
+                      boxFit: BoxFit.scaleDown,
+                    );
+                  },
+                  autoplay: true,
+                  itemCount: widget.tracking!.images!.length,
+                  pagination: const SwiperPagination(
+                    alignment: Alignment.bottomCenter,
+                    builder: DotSwiperPaginationBuilder(
+                      color: Colors.white,
+                      activeColor: Colors.red,
+                    ),
+                  ),
+                  // control: const SwiperControl(),
                 ),
               ),
               SizedBox(
                 height: 8.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                          color: ColorPalette.primaryColor,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Text(
+                          "Tracking Name",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  RichText(
+                      text: TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = _launchURL,
+                          text: "Check now",
+                          style: TextStyle(
+                              color: ColorPalette.primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800)))
+                ],
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              Text(
+                widget.tracking.name,
+                style: TextStyle(color: Colors.black, fontSize: 32),
+              ),
+              SizedBox(
+                height: 15.0,
               ),
               Container(
                 padding: EdgeInsets.all(6.0),
@@ -56,7 +123,7 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
-                  widget.tracking.name,
+                  "Description",
                   style: TextStyle(
                     color: Colors.white,
                   ),

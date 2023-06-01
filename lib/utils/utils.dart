@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 
 void showSnackBar(BuildContext context, String text) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(text),
-    ),
+  final snackBar = SnackBar(
+    content: Text(text, style: Theme.of(context).textTheme.labelLarge),
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: Color.fromARGB(255, 200, 222, 183),
   );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
 void httpErrorHandle({

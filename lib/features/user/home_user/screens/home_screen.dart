@@ -286,12 +286,14 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                                           final processData = process![index];
                                           return GestureDetector(
                                             onTap: () {
-                                              Navigator.of(context).pushNamed(
-                                                  NewFeedDetailScreen.routeName,
-                                                  arguments:
-                                                      ProcessDetailsArguments(
-                                                          process:
-                                                              processData));
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          NewFeedDetailScreen(
+                                                            process:
+                                                                processData,
+                                                          )));
                                             },
                                             child: Container(
                                               padding:

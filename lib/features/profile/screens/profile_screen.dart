@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/features/profile/components/body.dart';
 
-import '../../core/constants/color_constants.dart';
-import '../home/screens/main_app_screen.dart';
+import '../../../core/constants/color_constants.dart';
+import '../../home/screens/main_app_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

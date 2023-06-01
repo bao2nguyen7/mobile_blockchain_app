@@ -8,6 +8,7 @@ class Tracking {
   final String name;
   final String address;
   final String time;
+  final String url;
   final String description;
   final List<String> images;
   Tracking({
@@ -15,6 +16,7 @@ class Tracking {
     required this.name,
     required this.address,
     required this.time,
+    required this.url,
     required this.description,
     required this.images,
   });
@@ -25,6 +27,7 @@ class Tracking {
       'name': name,
       'address': address,
       'time': time,
+      'url': url,
       'description': description,
       'images': images,
     };
@@ -36,6 +39,7 @@ class Tracking {
         name: map['name'] as String,
         address: map['address'] as String,
         time: map['time'] as String,
+        url: map['url'] as String,
         description: map['description'] as String,
         images: List<String>.from(
           (map['images'] as List<dynamic>),

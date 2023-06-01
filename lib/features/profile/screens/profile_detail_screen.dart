@@ -1,18 +1,18 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_app_blockchain/features/profile/profile_screen.dart';
+import 'package:mobile_app_blockchain/features/profile/screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/constants/color_constants.dart';
-import '../../core/constants/dismenssion_constants.dart';
-import '../../providers/user_providers.dart';
-import '../home/screens/main_app_screen.dart';
-import '../widgets/button_widgets.dart';
-import '../widgets/richText_widget.dart';
-import '../widgets/textfieldName_widget.dart';
-import '../auth/services/auth_services.dart';
-import '../auth/screens/login_screen.dart';
+import '../../../core/constants/color_constants.dart';
+import '../../../core/constants/dismenssion_constants.dart';
+import '../../../providers/user_providers.dart';
+import '../../home/screens/main_app_screen.dart';
+import '../../widgets/button_widgets.dart';
+import '../../widgets/richText_widget.dart';
+import '../../widgets/textfieldName_widget.dart';
+import '../../auth/services/auth_services.dart';
+import '../../auth/screens/login_screen.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
   const ProfileDetailScreen({super.key});
@@ -66,7 +66,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
             maxWidth: size.width,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ColorPalette.primaryColor,
           ),
           child: Column(
             children: [

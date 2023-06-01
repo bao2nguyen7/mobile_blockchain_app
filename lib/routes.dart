@@ -19,8 +19,8 @@ import 'features/user/home_user/screens/main_app_screen.dart';
 import 'features/newfeed/screens/newfeed_detail.dart';
 import 'features/product/screens/detail_product_screen.dart';
 import 'features/product/screens/tracking_detail.dart';
-import 'features/profile/profile_detail_screen.dart';
-import 'features/profile/profile_screen.dart';
+import 'features/profile/screens/profile_detail_screen.dart';
+import 'features/profile/screens/profile_screen.dart';
 import 'features/qrcode/screens/qrcode_result.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -34,11 +34,9 @@ final Map<String, WidgetBuilder> routes = {
   HomeUserScreen.routeName: (context) => const HomeUserScreen(),
   ProductScreen.routeName: (context) => const ProductScreen(),
   QRCodeScreen.routeName: (context) => const QRCodeScreen(),
-  QRCodeResultScreen.routeName: (context) => const QRCodeResultScreen(),
   AddProductScreen.routeName: (context) => const AddProductScreen(),
   ProfileScreen.routeName: (context) => const ProfileScreen(),
   ProfileDetailScreen.routeName: (context) => const ProfileDetailScreen(),
   InforProductScreen.routeName: (context) => const InforProductScreen(),
   NewFeedScreen.routeName: (context) => const NewFeedScreen(),
-  NewFeedDetailScreen.routeName: (context) => const NewFeedDetailScreen(),
 };

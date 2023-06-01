@@ -8,8 +8,14 @@ import '../screens/newfeed_detail.dart';
 Widget customListTile(Process process, BuildContext context) {
   return InkWell(
     onTap: () {
-      Navigator.of(context).pushNamed(NewFeedDetailScreen.routeName,
-          arguments: ProcessDetailsArguments(process: process));
+      // Navigator.of(context).pushNamed(NewFeedDetailScreen.routeName,
+      //     arguments: ProcessDetailsArguments(process: process));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NewFeedDetailScreen(
+                    process: process,
+                  )));
     },
     child: Container(
       margin: EdgeInsets.all(12.0),

@@ -53,7 +53,7 @@ class _NewFeedScreenState extends State<NewFeedScreen> {
             maxWidth: size.width,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ColorPalette.primaryColor,
           ),
           child: Column(
             children: [
@@ -66,8 +66,8 @@ class _NewFeedScreenState extends State<NewFeedScreen> {
               Expanded(
                   flex: 25,
                   child: Container(
-                      child: SafeArea(
-                          child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -90,7 +90,7 @@ class _NewFeedScreenState extends State<NewFeedScreen> {
                                 )),
                       ),
                     ),
-                  ))))
+                  ))
             ],
           )),
     );

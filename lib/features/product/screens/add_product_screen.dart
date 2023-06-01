@@ -206,6 +206,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                                 style: BorderStyle.solid,
                                                 color: Colors.black))),
                                     keyboardType: TextInputType.emailAddress,
+                                    validator: (text) {
+                                      if (text == null || text.isEmpty) {
+                                        return 'Can\'t be empty';
+                                      }
+                                      if (text.length < 2) {
+                                        return 'Too short';
+                                      }
+                                      return null;
+                                    },
                                     readOnly:
                                         true, //set it true, so that user will not able to edit text
                                     onTap: () => _showDatePicker(context)),

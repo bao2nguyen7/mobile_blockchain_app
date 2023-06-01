@@ -57,25 +57,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
               color: ColorPalette.text1Color,
             )),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          constraints:
-              BoxConstraints(maxHeight: size.height, maxWidth: size.width),
-          decoration: BoxDecoration(
-            color: ColorPalette.primaryColor,
-          ),
-          child: Column(children: [
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(kMediumPadding),
-                        topRight: Radius.circular(kMediumPadding))),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: kMediumPadding),
+      body: Container(
+        constraints:
+            BoxConstraints(maxHeight: size.height, maxWidth: size.width),
+        decoration: BoxDecoration(
+          color: ColorPalette.primaryColor,
+        ),
+        child: Column(children: [
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(kMediumPadding),
+                      topRight: Radius.circular(kMediumPadding))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kMediumPadding),
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
                       SizedBox(height: kDefaultPadding),
@@ -84,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           width: 90,
                           height: 80,
                           child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30.0),
+                              borderRadius: BorderRadius.circular(15.0),
                               child:
                                   ImageHelper.loadFromAsset(AssetsHelper.logo)),
                         ),
@@ -215,8 +214,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-          ]),
-        ),
+          ),
+        ]),
       ),
     );
   }

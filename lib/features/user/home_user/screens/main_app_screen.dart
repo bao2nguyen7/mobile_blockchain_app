@@ -1,12 +1,14 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app_blockchain/features/home/screens/home_screen.dart';
 import 'package:mobile_app_blockchain/features/user/home_user/screens/home_screen.dart';
 import 'package:mobile_app_blockchain/features/product/screens/add_product_screen.dart';
 import 'package:mobile_app_blockchain/features/newfeed/screens/newfeed.dart';
 import 'package:mobile_app_blockchain/features/product/screens/product_screen.dart';
-import 'package:mobile_app_blockchain/features/profile/profile_screen.dart';
+import 'package:mobile_app_blockchain/features/profile/screens/profile_screen.dart';
 import 'package:mobile_app_blockchain/features/qrcode/screens/qrcode_screen.dart';
 
 import '../../../../core/constants/color_constants.dart';
@@ -41,13 +43,33 @@ class _MainAppUserScreenState extends State<MainAppUserScreen> {
 
   List<String> titleList = ['Home', 'Product', 'New Feeds', 'Profile'];
 
+  String? scanResult = "";
+  Future scanBarCode() async {
+    String scanResult;
+    try {
+      scanResult = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', "Cancel", true, ScanMode.QR);
+      print(scanResult);
+      if (scanResult != -1) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => QRCodeResultScreen(
+                      id: scanResult,
+                    )));
+      }
+    } on PlatformException {
+      scanResult = "Fail";
+    }
+    if (!mounted) return;
+    setState(() => this.scanResult = scanResult);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed(QRCodeResultScreen.routeName);
-          },
+          onPressed: scanBarCode,
           backgroundColor: ColorPalette.primaryColor,
           child: const Icon(Icons.qr_code_2),
         ),

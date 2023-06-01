@@ -51,7 +51,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
       timeinput.text = widget.product.time;
       images = widget.product.images;
       id = widget.product.id;
-      print(id);
     });
     super.initState();
   }

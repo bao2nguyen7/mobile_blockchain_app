@@ -38,6 +38,7 @@ class ProductServices {
           time: time,
           description: description,
           images: imageUrls,
+          url: '',
           tracking: []);
       http.Response res =
           await http.post(Uri.parse('${Constants.uri}/product/add-product'),
@@ -85,6 +86,7 @@ class ProductServices {
           address: address,
           time: time,
           description: description,
+          url: '',
           images: images,
           tracking: []);
       http.Response res = await http.put(
@@ -102,9 +104,7 @@ class ProductServices {
                 .copyWith(products: jsonDecode(res.body)['products']);
             userProvider.setUserFromModel(user);
             showSnackBar(context, 'Update product successfully');
-            Navigator.of(context).pushNamed(
-              ProductScreen.routeName,
-            );
+            // Navigator.of(context).pop();
           });
     } catch (e) {
       showSnackBar(context, e.toString());
@@ -164,6 +164,7 @@ class ProductServices {
           name: name,
           address: address,
           time: time,
+          url: '',
           description: description,
           images: imageUrls);
       http.Response res = await http.post(
@@ -248,13 +249,23 @@ class ProductServices {
     return productAll;
   }
 
-  Future<List<Product>> fetchDetailProducts(
+  Future<Product> fetchDetailProducts(
       {required BuildContext context, required String id}) async {
-    List<Product> productAll = [];
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    Product productAll = Product(
+        id: '',
+        name: '',
+        address: '',
+        time: '',
+        description: '',
+        url: '',
+        images: [],
+        tracking: []);
     try {
       http.Response res = await http
           .get(Uri.parse('${Constants.uri}/product/get-product/$id'), headers: {
         'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
       });
 
       httpErrorHandle(
@@ -263,11 +274,10 @@ class ProductServices {
         onSuccess: () {
           final json = jsonDecode(res.body);
           final item = json["data"];
+          print(item);
           // print(item);
           // print(json["data"]["products"]);
-          for (int i = 0; i < item.length; i++) {
-            productAll.add(Product.fromJson(jsonEncode(item[i])));
-          }
+          productAll = Product.fromJson(jsonEncode(item));
           print(productAll);
         },
       );
@@ -282,11 +292,12 @@ class ProductServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     List<Tracking> trackingList = [];
     try {
-      http.Response res = await http
-          .get(Uri.parse('${Constants.uri}/product/get-product/$id'), headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'x-auth-token': userProvider.user.token,
-      });
+      http.Response res = await http.get(
+          Uri.parse('${Constants.uri}/tracking/get-tracking/$id'),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': userProvider.user.token,
+          });
 
       httpErrorHandle(
         response: res,
@@ -295,10 +306,12 @@ class ProductServices {
           final json = jsonDecode(res.body);
           // name = json["data"]["tracking"];
           // print(json["data"]["tracking"]);
-          final result = json["data"]["tracking"];
+          final result = json["data"];
           // print(json["data"]["tracking"]);
           for (int i = 0; i < result.length; i++) {
-            trackingList.add(Tracking.fromJson(jsonEncode(result[i])));
+            if (result[i]["productID"] == id) {
+              trackingList.add(Tracking.fromJson(jsonEncode(result[i])));
+            }
           }
           // print("TrackingList: ");
           // print(trackingList);
