@@ -56,6 +56,8 @@ class _MainAppScreenState extends State<MainAppScreen> {
                 builder: (context) => QRCodeResultScreen(
                       id: scanResult,
                     )));
+      } else if (scanResult == -1) {
+        Navigator.of(context).pop();
       }
     } on PlatformException {
       scanResult = "Fail";
@@ -66,28 +68,31 @@ class _MainAppScreenState extends State<MainAppScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: scanBarCode,
-          backgroundColor: ColorPalette.primaryColor,
-          child: const Icon(Icons.qr_code_2),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        backgroundColor: Colors.white,
-        body: IndexedStack(index: _currentIndex, children: pages),
-        bottomNavigationBar: AnimatedBottomNavigationBar(
-          activeIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          splashColor: ColorPalette.primaryColor,
-          activeColor: ColorPalette.primaryColor,
-          inactiveColor: Colors.black.withOpacity(.5),
-          icons: icons,
-          gapLocation: GapLocation.center,
-          notchSmoothness: NotchSmoothness.softEdge,
-        ));
+    return ScaffoldMessenger(
+      child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: scanBarCode,
+            backgroundColor: ColorPalette.primaryColor,
+            child: const Icon(Icons.qr_code_2),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          backgroundColor: Colors.white,
+          body: IndexedStack(index: _currentIndex, children: pages),
+          bottomNavigationBar: AnimatedBottomNavigationBar(
+            activeIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            splashColor: ColorPalette.primaryColor,
+            activeColor: ColorPalette.primaryColor,
+            inactiveColor: Colors.black.withOpacity(.5),
+            icons: icons,
+            gapLocation: GapLocation.center,
+            notchSmoothness: NotchSmoothness.softEdge,
+          )),
+    );
   }
 }

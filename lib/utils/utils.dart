@@ -7,7 +7,7 @@ import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 void showSnackBar(BuildContext context, String text) {
   final snackBar = SnackBar(
     content: Text(text, style: Theme.of(context).textTheme.labelLarge),
-    behavior: SnackBarBehavior.floating,
+    // behavior: SnackBarBehavior.floating,
     backgroundColor: Color.fromARGB(255, 200, 222, 183),
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);

@@ -6,6 +6,7 @@ import '../../../size_config.dart';
 import '../../newfeed/screens/newfeed.dart';
 import '../../newfeed/screens/newfeed_detail.dart';
 import '../../product/screens/add_product_screen.dart';
+import '../../product/screens/journal_sceen.dart';
 import '../../product/screens/product_screen.dart';
 
 class Categories extends StatelessWidget {
@@ -31,9 +32,9 @@ class Categories extends StatelessWidget {
                 }),
             CategoryCard(
                 icon: AssetsHelper.newFeed,
-                text: "New feed",
+                text: "Journal",
                 press: () {
-                  Navigator.of(context).pushNamed(NewFeedScreen.routeName);
+                  Navigator.of(context).pushNamed(JournalScreen.routeName);
                 }),
           ]),
     );

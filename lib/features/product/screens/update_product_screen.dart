@@ -70,10 +70,11 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     }
   }
 
+  // List<File> imagess = [];
   // void selectImages() async {
   //   var res = await pickImages();
   //   setState(() {
-  //     images = res;
+  //     imagess = res;
   //   });
   // }
 

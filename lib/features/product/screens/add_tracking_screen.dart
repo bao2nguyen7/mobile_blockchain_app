@@ -53,7 +53,6 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
         context: context,
         name: _nameTextController.text,
         description: _descriptionTextController.text,
-        address: _addressTextController.text,
         time: timeinput.text,
         images: images,
       );
@@ -159,16 +158,6 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName("Tracking Name",
                                     _nameTextController, false),
-                                SizedBox(height: kDefaultPadding * 2),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    reuseableRichText("Address"),
-                                  ],
-                                ),
-                                SizedBox(height: kDefaultPadding / 2),
-                                reusableTextFiledName(
-                                    "Address", _addressTextController, false),
                                 SizedBox(height: kDefaultPadding * 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,

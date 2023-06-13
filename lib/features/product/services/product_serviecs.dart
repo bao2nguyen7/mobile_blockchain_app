@@ -6,6 +6,7 @@ import 'package:mobile_app_blockchain/core/constants/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../../../models/product.dart';
+import '../../../models/productSC.dart';
 import '../../../models/tracking.dart';
 import '../../../models/user.dart';
 import '../../../providers/user_providers.dart';
@@ -145,7 +146,6 @@ class ProductServices {
       {required BuildContext context,
       required String id,
       required String name,
-      required String address,
       required String time,
       required String description,
       required List<File> images}) async {
@@ -162,7 +162,6 @@ class ProductServices {
       Tracking tracking = Tracking(
           id: '',
           name: name,
-          address: address,
           time: time,
           url: '',
           description: description,
@@ -204,10 +203,45 @@ class ProductServices {
         onSuccess: () {
           final json = jsonDecode(res.body);
           final result = json["data"];
+
           // print(json["data"]["products"]);
           for (int i = 0; i < result.length; i++) {
             if (result[i]["userId"] == userProvider.user.id)
               productList.add(Product.fromJson(jsonEncode(result[i])));
+          }
+          // for (int i = 0; i < productList.length; i++) {
+          //   print(productList[i].name);
+          // }
+          print(productList);
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return productList;
+  }
+
+  Future<List<ProductSC>> fetchAllProductsSC(
+      {required BuildContext context}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<ProductSC> productList = [];
+    try {
+      http.Response res = await http
+          .get(Uri.parse('${Constants.uri}/product/get-product'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          final json = jsonDecode(res.body);
+          final result = json["dataSC"];
+          // print(json["data"]["products"]);
+          for (int i = 0; i < result.length; i++) {
+            if (result[i]["uid"] == userProvider.user.id)
+              productList.add(ProductSC.fromJson(jsonEncode(result[i])));
           }
           // for (int i = 0; i < productList.length; i++) {
           //   print(productList[i].name);
@@ -221,33 +255,33 @@ class ProductServices {
   }
 
   //Recommended product list
-  Future<List<Product>> fetchProducts({required BuildContext context}) async {
-    List<Product> productAll = [];
-    try {
-      http.Response res = await http
-          .get(Uri.parse('${Constants.uri}/product/get-product'), headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
+  // Future<List<Product>> fetchProducts({required BuildContext context}) async {
+  //   List<Product> productAll = [];
+  //   try {
+  //     http.Response res = await http
+  //         .get(Uri.parse('${Constants.uri}/product/get-product'), headers: {
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //     });
 
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          final json = jsonDecode(res.body);
-          final item = json["data"];
-          // print(item);
-          // print(json["data"]["products"]);
-          for (int i = 0; i < item.length; i++) {
-            productAll.add(Product.fromJson(jsonEncode(item[i])));
-          }
-          print(productAll);
-        },
-      );
-    } catch (e) {
-      showSnackBar(context, e.toString());
-    }
-    return productAll;
-  }
+  //     httpErrorHandle(
+  //       response: res,
+  //       context: context,
+  //       onSuccess: () {
+  //         final json = jsonDecode(res.body);
+  //         final item = json["data"];
+  //         // print(item);
+  //         // print(json["data"]["products"]);
+  //         for (int i = 0; i < item.length; i++) {
+  //           productAll.add(Product.fromJson(jsonEncode(item[i])));
+  //         }
+  //         print(productAll);
+  //       },
+  //     );
+  //   } catch (e) {
+  //     showSnackBar(context, e.toString());
+  //   }
+  //   return productAll;
+  // }
 
   Future<Product> fetchDetailProducts(
       {required BuildContext context, required String id}) async {

@@ -179,7 +179,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                 TopRoundedContainer(
                   color: ColorPalette.primaryColor,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -193,7 +193,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: 15,
+                            height: 20,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,8 +203,10 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                 children: [
                                   Container(
                                     width: 250,
+                                    height: 80,
                                     child: FittedBox(
-                                      fit: BoxFit.contain,
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
                                       child: Text(
                                         widget.product.name,
                                         textAlign: TextAlign.left,
@@ -241,7 +243,17 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                               )
                             ],
                           ),
-                          SizedBox(height: 25),
+                          SizedBox(height: 12),
+                          Align(
+                            child: Container(
+                              width: 500,
+                              height: 0.5,
+                              decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 214, 216, 212),
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                          ),
+                          SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -265,14 +277,24 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   text: TextSpan(
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = _launchURL,
-                                      text: "Check now",
+                                      text: "Check",
                                       style: TextStyle(
                                           color: ColorPalette.primaryColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.w800))),
                             ],
                           ),
-                          SizedBox(height: 25),
+                          SizedBox(height: 20),
+                          Align(
+                            child: Container(
+                              width: 500,
+                              height: 0.5,
+                              decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 214, 216, 212),
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                          ),
+                          SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -307,7 +329,17 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                 ? 3
                                 : widget.product.description.length,
                           ),
-                          SizedBox(height: 35),
+                          SizedBox(height: 20),
+                          Align(
+                            child: Container(
+                              width: 500,
+                              height: 0.5,
+                              decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 214, 216, 212),
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                          ),
+                          SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

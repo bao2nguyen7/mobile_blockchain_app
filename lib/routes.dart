@@ -14,6 +14,7 @@ import 'package:mobile_app_blockchain/models/user.dart';
 
 import 'features/auth/screens/login_screen.dart';
 import 'features/admin/screens/splash_screen.dart';
+import 'features/product/screens/journal_sceen.dart';
 import 'features/user/home_user/screens/home_screen.dart';
 import 'features/user/home_user/screens/main_app_screen.dart';
 import 'features/newfeed/screens/newfeed_detail.dart';
@@ -33,6 +34,7 @@ final Map<String, WidgetBuilder> routes = {
   HomeScreen.routeName: (context) => const HomeScreen(),
   HomeUserScreen.routeName: (context) => const HomeUserScreen(),
   ProductScreen.routeName: (context) => const ProductScreen(),
+  JournalScreen.routeName: (context) => const JournalScreen(),
   QRCodeScreen.routeName: (context) => const QRCodeScreen(),
   AddProductScreen.routeName: (context) => const AddProductScreen(),
   ProfileScreen.routeName: (context) => const ProfileScreen(),

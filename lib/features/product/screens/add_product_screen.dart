@@ -227,22 +227,26 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 images.isNotEmpty
-                                    ? CarouselSlider(
-                                        items: images.map(
-                                          (i) {
-                                            return Builder(
-                                              builder: (BuildContext context) =>
-                                                  Image.file(
-                                                i,
-                                                fit: BoxFit.cover,
-                                                height: 200,
-                                              ),
-                                            );
-                                          },
-                                        ).toList(),
-                                        options: CarouselOptions(
-                                          viewportFraction: 1,
-                                          height: 200,
+                                    ? GestureDetector(
+                                        onTap: selectImages,
+                                        child: CarouselSlider(
+                                          items: images.map(
+                                            (i) {
+                                              return Builder(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Image.file(
+                                                  i,
+                                                  fit: BoxFit.cover,
+                                                  height: 200,
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          options: CarouselOptions(
+                                            viewportFraction: 1,
+                                            height: 200,
+                                          ),
                                         ),
                                       )
                                     : GestureDetector(

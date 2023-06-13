@@ -6,7 +6,6 @@ import '../../../models/user.dart';
 class Tracking {
   final String id;
   final String name;
-  final String address;
   final String time;
   final String url;
   final String description;
@@ -14,7 +13,6 @@ class Tracking {
   Tracking({
     required this.id,
     required this.name,
-    required this.address,
     required this.time,
     required this.url,
     required this.description,
@@ -25,7 +23,6 @@ class Tracking {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'address': address,
       'time': time,
       'url': url,
       'description': description,
@@ -37,7 +34,6 @@ class Tracking {
     return Tracking(
         id: map['_id'] as String,
         name: map['name'] as String,
-        address: map['address'] as String,
         time: map['time'] as String,
         url: map['url'] as String,
         description: map['description'] as String,
