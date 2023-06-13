@@ -44,103 +44,107 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
         backgroundColor: ColorPalette.primaryColor,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 250,
-                child: Swiper(
-                  itemBuilder: (BuildContext context, int index) {
-                    return FancyShimmerImage(
-                      width: double.infinity,
-                      imageUrl: widget.tracking!.images![index].toString(),
-                      boxFit: BoxFit.scaleDown,
-                    );
-                  },
-                  autoplay: true,
-                  itemCount: widget.tracking!.images!.length,
-                  pagination: const SwiperPagination(
-                    alignment: Alignment.bottomCenter,
-                    builder: DotSwiperPaginationBuilder(
-                      color: Colors.white,
-                      activeColor: Colors.red,
-                    ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 250,
+              child: Swiper(
+                itemBuilder: (BuildContext context, int index) {
+                  return FancyShimmerImage(
+                    width: double.infinity,
+                    imageUrl: widget.tracking!.images![index].toString(),
+                    boxFit: BoxFit.scaleDown,
+                  );
+                },
+                autoplay: true,
+                itemCount: widget.tracking!.images!.length,
+                pagination: const SwiperPagination(
+                  alignment: Alignment.bottomCenter,
+                  builder: DotSwiperPaginationBuilder(
+                    color: Colors.white,
+                    activeColor: Colors.red,
                   ),
-                  // control: const SwiperControl(),
                 ),
+                // control: const SwiperControl(),
               ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(6.0),
-                        decoration: BoxDecoration(
-                          color: ColorPalette.primaryColor,
-                          borderRadius: BorderRadius.circular(10.0),
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Padding(
+              padding: EdgeInsets.all(13),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                color: ColorPalette.primaryColor,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Text(
+                                "Tracking Name",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          "Tracking Name",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                        RichText(
+                            text: TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = _launchURL,
+                                text: "Check now",
+                                style: TextStyle(
+                                    color: ColorPalette.primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800)))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text(
+                      widget.tracking.name,
+                      style: TextStyle(color: Colors.black, fontSize: 32),
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(
+                        color: ColorPalette.primaryColor,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Text(
+                        "Description",
+                        style: TextStyle(
+                          color: Colors.white,
                         ),
                       ),
-                    ],
-                  ),
-                  RichText(
-                      text: TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = _launchURL,
-                          text: "Check now",
-                          style: TextStyle(
-                              color: ColorPalette.primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800)))
-                ],
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Text(
-                widget.tracking.name,
-                style: TextStyle(color: Colors.black, fontSize: 32),
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              Container(
-                padding: EdgeInsets.all(6.0),
-                decoration: BoxDecoration(
-                  color: ColorPalette.primaryColor,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Text(
-                  "Description",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Text(
-                widget.tracking.description,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0,
-                ),
-              )
-            ],
-          ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text(
+                      widget.tracking.description,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                      ),
+                    )
+                  ]),
+            )
+          ],
         ),
       ),
     );

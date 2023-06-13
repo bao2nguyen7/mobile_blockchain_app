@@ -1,6 +1,6 @@
 class Constants {
-  // static String uri = 'https://backend.teamluanvan.software';
-  static String uri = 'http://localhost:4000';
+  static String uri = 'https://backend.teamluanvan.software';
+  // static String uri = 'http://localhost:4000';
   static String urlQRCode =
       'http://backend.teamluanvan.software/product/get-product/';
   static String loading =
