@@ -22,6 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../models/product.dart';
 import '../../../providers/user_providers.dart';
+import '../../newfeed/services/process_services.dart';
 import '../../widgets/loader.dart';
 import '../services/product_serviecs.dart';
 import '../widgets/custom_app_bar.dart';
@@ -38,6 +39,7 @@ class DeatilProductScreen extends StatefulWidget {
 
 class _DeatilProductScreenState extends State<DeatilProductScreen> {
   final ProductServices productServices = ProductServices();
+  final ProcessServices processServices = ProcessServices();
   int selectedImage = 0;
   bool isSeeAll = false;
   void isSeeAllCheck() {
@@ -99,7 +101,10 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
     var urllaunchable =
         await canLaunch(url); //canLaunch is from url_launcher package
     if (urllaunchable) {
-      await launch(url); //launch is from url_launcher package to launch URL
+      await launch(url,
+          forceWebView: true,
+          enableJavaScript:
+              true); //launch is from url_launcher package to launch URL
     } else {
       print("URL can't be launched.");
       ;
@@ -277,7 +282,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   text: TextSpan(
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = _launchURL,
-                                      text: "Check",
+                                      text: "Check now",
                                       style: TextStyle(
                                           color: ColorPalette.primaryColor,
                                           fontSize: 16,

@@ -284,6 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         itemBuilder: (context, index) {
                                           final processData = process![index];
+                                          print(processData);
                                           return GestureDetector(
                                             onTap: () {
                                               Navigator.push(
@@ -321,11 +322,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         Alignment.topRight,
                                                     child: SingleProduct(
                                                         image: processData
-                                                                    .images
+                                                                    .stageProcess!
+                                                                    .images!
                                                                     .length >
                                                                 0
                                                             ? processData
-                                                                .images[0]
+                                                                .stageProcess!
+                                                                .images![0]
                                                             : Constants.loading,
                                                         height: 120),
                                                   ),
@@ -337,7 +340,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          processData.name,
+                                                          processData
+                                                              .stageProcess!
+                                                              .name as String,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme

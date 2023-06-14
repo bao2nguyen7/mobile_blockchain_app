@@ -39,8 +39,8 @@ Widget customListTile(Process process, BuildContext context) {
             decoration: BoxDecoration(
               //let's add the height
               image: DecorationImage(
-                  image: NetworkImage(process.images.length != 0
-                      ? process.images[0]
+                  image: NetworkImage(process!.stageProcess!.images!.length != 0
+                      ? process.stageProcess!.images![0]
                       : Constants.loading),
                   fit: BoxFit.cover),
               borderRadius: BorderRadius.circular(12.0),
@@ -56,7 +56,7 @@ Widget customListTile(Process process, BuildContext context) {
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Text(
-              process.name,
+              process.stageProcess!.name as String,
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -66,7 +66,7 @@ Widget customListTile(Process process, BuildContext context) {
             height: 8.0,
           ),
           Text(
-            process.description,
+            process.stageProcess!.description as String,
             maxLines: 2,
             style: TextStyle(
               fontWeight: FontWeight.bold,

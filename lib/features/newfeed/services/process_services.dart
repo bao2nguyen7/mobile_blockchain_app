@@ -25,9 +25,43 @@ class ProcessServices {
         onSuccess: () {
           final json = jsonDecode(res.body);
           final result = json["data"];
+          // print(result);
           // print(json["data"]["products"]);
           for (int i = 0; i < result.length; i++) {
-            processList.add(Process.fromJson(jsonEncode(result[i])));
+            processList.add(Process.fromJson(result[i]));
+            // print(result[i]["stageProcess"]["name"]);
+            print(processList);
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return processList;
+  }
+
+  Future<List<String>> fetchAllProcessTitle(
+      {required BuildContext context}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<String> processList = [];
+    try {
+      http.Response res = await http
+          .get(Uri.parse('${Constants.uri}/process/get-processes'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        // 'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          final json = jsonDecode(res.body);
+          final result = json["data"];
+          // print(result);
+          // print(json["data"]["products"]);
+          for (int i = 0; i < result.length; i++) {
+            processList.add(result[i]["stageProcess"]["name"]);
+            print(result[i]["stageProcess"]["name"]);
             print(processList);
           }
         },

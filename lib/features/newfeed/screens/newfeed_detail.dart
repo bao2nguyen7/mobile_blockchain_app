@@ -24,7 +24,7 @@ class _NewFeedDetailScreenState extends State<NewFeedDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.process.name),
+        title: Text(widget.process.stageProcess!.name as String),
         backgroundColor: ColorPalette.primaryColor,
       ),
       body: SingleChildScrollView(
@@ -38,12 +38,13 @@ class _NewFeedDetailScreenState extends State<NewFeedDetailScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return FancyShimmerImage(
                     width: double.infinity,
-                    imageUrl: widget.process!.images![index].toString(),
+                    imageUrl:
+                        widget.process!.stageProcess!.images![index].toString(),
                     boxFit: BoxFit.fill,
                   );
                 },
                 autoplay: true,
-                itemCount: widget.process!.images!.length,
+                itemCount: widget.process!.stageProcess!.images!.length,
                 pagination: const SwiperPagination(
                   alignment: Alignment.bottomCenter,
                   builder: DotSwiperPaginationBuilder(
@@ -58,13 +59,13 @@ class _NewFeedDetailScreenState extends State<NewFeedDetailScreen> {
               height: 8.0,
             ),
             Container(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                 color: ColorPalette.primaryColor,
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: Text(
-                widget.process.name,
+                widget.process.stageProcess!.name as String,
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -74,9 +75,9 @@ class _NewFeedDetailScreenState extends State<NewFeedDetailScreen> {
               height: 8.0,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               child: Text(
-                widget.process.description,
+                widget.process.stageProcess!.description as String,
                 style: TextStyle(
                   fontWeight: FontWeight.w300,
                   fontSize: 16.0,

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,8 +18,10 @@ import 'package:provider/provider.dart';
 
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../core/constants/utils.dart';
+import '../../../models/product.dart';
 import '../../../models/user.dart';
 import '../../../providers/user_providers.dart';
+import '../../newfeed/services/process_services.dart';
 import '../services/product_serviecs.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -29,17 +32,29 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
+  _AddProductScreenState() {
+    valueChoose = "Process";
+  }
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _addressTextController = TextEditingController();
   TextEditingController _descriptionTextController = TextEditingController();
   TextEditingController timeinput = TextEditingController();
   final ProductServices productServices = ProductServices();
-
+  final ProcessServices processServices = ProcessServices();
+  @override
   @override
   void initState() {
     // TODO: implement initState
     timeinput.text = "";
     super.initState();
+    fetchProcess();
+  }
+
+  String valueChoose = "";
+  List<String> process = [];
+  Future fetchProcess() async {
+    process = await processServices.fetchAllProcessTitle(context: context);
+    print(process);
   }
 
   List<File> images = [];
@@ -84,10 +99,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       onDateTimeChanged: (DateTime val) {
                         setState(() {
                           _chosenDateTime = val;
-                          timeinput.text = _chosenDateTime.toString();
+                          timeinput.text =
+                              "${_chosenDateTime.day.toString()}/${_chosenDateTime.month.toString()}/${_chosenDateTime.year.toString()}";
                         });
                       },
-                      mode: CupertinoDatePickerMode.dateAndTime,
+                      mode: CupertinoDatePickerMode.date,
                     ),
                   ),
 
@@ -101,6 +117,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             ));
   }
 
+//  var processName = process.map
   @override
   void dispose() {
     // TODO: implement dispose
@@ -178,6 +195,102 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName(
                                     "Address", _addressTextController, false),
+                                SizedBox(height: kDefaultPadding * 2),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    reuseableRichText("Process"),
+                                  ],
+                                ),
+                                SizedBox(height: kDefaultPadding / 2),
+                                DropdownButtonFormField2(
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    focusColor: ColorPalette.subTitleColor,
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        gapPadding: 50),
+                                  ),
+                                  buttonStyleData: ButtonStyleData(
+                                    height: 60,
+                                    width: 160,
+                                    padding: const EdgeInsets.only(
+                                        left: 11, right: 16),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: Colors.black, width: 0.5),
+                                      color: ColorPalette.subTitleColor
+                                          .withOpacity(0.3),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  isExpanded: true,
+                                  hint: Row(
+                                    children: [
+                                      Icon(Icons.brightness_5_outlined,
+                                          color: ColorPalette.subTitleColor),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      const Text(
+                                        'Choose Process',
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ],
+                                  ),
+                                  items: process
+                                      .map((item) => DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                    Icons.brightness_5_outlined,
+                                                    color: ColorPalette
+                                                        .subTitleColor),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                  item,
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ))
+                                      .toList(),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Please select gender.';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (value) {
+                                    setState(() {
+                                      valueChoose = value.toString();
+                                      print(valueChoose);
+                                    });
+                                  },
+                                  onSaved: (value) {
+                                    valueChoose = value.toString();
+                                    print(valueChoose);
+                                  },
+                                  iconStyleData: const IconStyleData(
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.black45,
+                                    ),
+                                    iconSize: 30,
+                                  ),
+                                  dropdownStyleData: DropdownStyleData(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                ),
                                 SizedBox(height: kDefaultPadding * 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,

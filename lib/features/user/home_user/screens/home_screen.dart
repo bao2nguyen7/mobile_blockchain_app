@@ -321,11 +321,13 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                                                         Alignment.topRight,
                                                     child: SingleProduct(
                                                         image: processData
-                                                                    .images
+                                                                    .stageProcess!
+                                                                    .images!
                                                                     .length >
                                                                 0
                                                             ? processData
-                                                                .images[0]
+                                                                .stageProcess!
+                                                                .images![0]
                                                             : Constants.loading,
                                                         height: 120),
                                                   ),
@@ -337,7 +339,9 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          processData.name,
+                                                          processData
+                                                              .stageProcess!
+                                                              .name as String,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
