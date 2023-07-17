@@ -51,6 +51,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   final ProcessServices processServices = ProcessServices();
   String id = '';
   String processProductID = "";
+  String productId = '';
   List<String> images = [];
   List<String> certificate = [];
   int? productNumber = 0;
@@ -85,6 +86,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
       certificate = widget.product.certificates;
       valueChoose = stageProcessName as String;
       id = widget.product.id;
+      productId = widget.product.productId;
       processProductID = widget.product.processId;
     });
     super.initState();
@@ -93,6 +95,13 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   final _updateProductFormKey = GlobalKey<FormState>();
   //update-Product
   void updateProduct() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
     if (_updateProductFormKey.currentState!.validate() && images.isNotEmpty) {
       productServices.updateProduct(
           context: context,
@@ -103,6 +112,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           time: timeinput.text,
           processId: processProductID,
           images: images,
+          productId: productId,
           certificate: certificate);
     }
   }

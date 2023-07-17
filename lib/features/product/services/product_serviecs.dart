@@ -74,6 +74,7 @@ class ProductServices {
 
             showSnackBar(context, 'Sản phẩm được thêm thành công');
             // Navigator.of(context).pushNamed(ProductScreen.routeName);
+            Navigator.of(context).pop();
           });
     } catch (e) {
       showSnackBar(context, e.toString());
@@ -88,6 +89,7 @@ class ProductServices {
       required String time,
       required String processId,
       required String description,
+      required String productId,
       required List<String> images,
       required List<String> certificate}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -105,7 +107,7 @@ class ProductServices {
           name: name,
           address: address,
           time: time,
-          productId: '',
+          productId: productId,
           description: description,
           processId: processId,
           url: '',
@@ -113,7 +115,7 @@ class ProductServices {
           certificates: certificate,
           tracking: []);
       http.Response res = await http.put(
-          Uri.parse('${Constants.uri}/product/update-product/$id'),
+          Uri.parse('${Constants.uri}/product/update-product/$productId'),
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             'x-auth-token': userProvider.user.token,

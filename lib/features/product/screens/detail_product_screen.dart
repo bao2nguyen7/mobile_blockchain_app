@@ -275,7 +275,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   SizedBox(height: 5),
                                   Container(
                                     width: 290,
-                                    height: 60,
+                                    height: 30,
                                     child: Row(
                                       children: [
                                         Icon(Icons.add_location),

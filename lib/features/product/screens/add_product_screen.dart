@@ -83,7 +83,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
           images: images,
           certificates: certificate);
     }
-    Navigator.of(context).pop();
   }
 
   void selectImages() async {
