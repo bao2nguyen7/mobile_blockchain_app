@@ -90,12 +90,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       SizedBox(height: kDefaultPadding),
                       Text(
-                        'Sign Up',
+                        'Đăng ký',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: kDefaultPadding * 3),
-                      reusableTextFiled("Name", FontAwesomeIcons.user, false,
+                      reusableTextFiled("Tên", FontAwesomeIcons.user, false,
                           _nameTextController),
                       SizedBox(height: kDefaultPadding * 2),
                       DropdownButtonFormField2(
@@ -127,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: 10,
                             ),
                             const Text(
-                              'Select Your Role',
+                              'Chọn vai trò',
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
@@ -154,7 +154,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             .toList(),
                         validator: (value) {
                           if (value == null) {
-                            return 'Please select gender.';
+                            return 'Xin hãy chọn vai trò';
                           }
                           return null;
                         },
@@ -185,14 +185,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       reusableTextFiled("Email", FontAwesomeIcons.envelope,
                           false, _emailTextController),
                       SizedBox(height: kDefaultPadding * 2),
-                      reusableTextFiled("Password", FontAwesomeIcons.lock, true,
+                      reusableTextFiled("Mật khẩu", FontAwesomeIcons.lock, true,
                           _passwordTextController),
                       SizedBox(height: kDefaultPadding * 3),
-                      ButtonWidget(title: "Sign Up", onTap: signupUser),
+                      ButtonWidget(title: "Đăng ký", onTap: signupUser),
                       SizedBox(height: kDefaultPadding * 3),
                       RichText(
                         text: TextSpan(
-                            text: "Already a User?",
+                            text: "Bạn sẵn sàng là người dùng?",
                             style: TextStyle(
                                 color: ColorPalette.text1Color, fontSize: 16),
                             children: <TextSpan>[
@@ -202,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       Navigator.of(context)
                                           .pushNamed(LoginScreen.routeName);
                                     },
-                                  text: " Login now",
+                                  text: " Đăng nhập",
                                   style: TextStyle(
                                       color: ColorPalette.blueColor,
                                       fontSize: 16,

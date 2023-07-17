@@ -19,6 +19,7 @@ import '../../../newfeed/screens/newfeed_detail.dart';
 import '../../../newfeed/services/process_services.dart';
 import '../../../product/screens/add_product_screen.dart';
 import '../../../product/screens/detail_product_screen.dart';
+import '../../../product/screens/product_user_screen.dart';
 import '../../../product/services/product_serviecs.dart';
 import '../../../widgets/btn_widget.dart';
 import '../../../widgets/loader.dart';
@@ -44,10 +45,12 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
 
   bool isLoading = true;
 
-  List<Product>? product = [];
+  List<Product>? product;
   Future fetchProduct() async {
-    product = await productServices.fetchAllProducts(context: context);
-    setState(() {});
+    product = await productServices.fetchAllProductsUser(context: context);
+    if (mounted) {
+      setState(() {});
+    }
     // print(product);
   }
 
@@ -81,7 +84,7 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
             children: [
               RichText(
                 text: TextSpan(
-                    text: "Hi, ",
+                    text: "Xin chào, ",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black38,
@@ -97,7 +100,7 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
               ),
               SizedBox(height: 5),
               Text(
-                'Have a good day',
+                'Chúc một ngày tốt lành',
                 style: TextStyle(color: Colors.black54, fontSize: 14),
               ),
             ],
@@ -158,7 +161,7 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Popular product",
+                                "Sản phẩm nổi bật",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall!
@@ -168,9 +171,12 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                               ),
                               TextButton(
                                 style: flatButtonStyle,
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushNamed(ProductUserScreen.routeName);
+                                },
                                 child: Text(
-                                  "More",
+                                  "Xem thêm",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
@@ -179,47 +185,63 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                           SizedBox(
                             height: 5,
                           ),
-                          Container(
-                            height: 160,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: product!.length,
-                                itemBuilder: (context, index) {
-                                  final item = product![index];
-                                  return Container(
-                                    margin: const EdgeInsets.only(right: 10),
-                                    decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 232, 228, 224),
-                                        border: Border.all(
-                                            color: Color.fromARGB(
-                                                255, 209, 205, 205)),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Column(
-                                      children: [
-                                        SingleProduct(
-                                            image: item.images.length > 0
-                                                ? item.images[0]
-                                                : Constants.loading,
-                                            height: 120),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          item.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  height: 1.5),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          )
+                          product == null
+                              ? Loader()
+                              : Container(
+                                  height: 160,
+                                  child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: product!.length,
+                                      itemBuilder: (context, index) {
+                                        final item = product![index];
+                                        return Container(
+                                          margin:
+                                              const EdgeInsets.only(right: 10),
+                                          decoration: BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              border: Border.all(
+                                                  color: Color.fromARGB(
+                                                      255, 236, 233, 233)),
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DeatilProductScreen(
+                                                            product: item,
+                                                          )));
+                                            },
+                                            child: Column(
+                                              children: [
+                                                SingleProduct(
+                                                    image:
+                                                        item.images.length > 0
+                                                            ? item.images[0]
+                                                            : Constants.loading,
+                                                    height: 120),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  item.name,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge!
+                                                      .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          height: 1.5),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                )
                         ],
                       ),
                       const SizedBox(
@@ -229,7 +251,7 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "New Feed",
+                            "Bảng tin",
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall!
@@ -243,7 +265,7 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                                   .pushNamed(NewFeedScreen.routeName);
                             },
                             child: Text(
-                              "More",
+                              "Xem thêm",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -331,21 +353,25 @@ class _HomeUserScreenState extends State<HomeUserScreen> {
                                                             : Constants.loading,
                                                         height: 120),
                                                   ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
                                                   Align(
                                                     alignment: Alignment.center,
                                                     child: Column(
                                                       children: [
-                                                        Text(
-                                                          processData
-                                                              .stageProcess!
-                                                              .name as String,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .labelLarge,
+                                                        SizedBox(
+                                                          height: 4,
+                                                        ),
+                                                        Container(
+                                                          width: 200,
+                                                          height: 50,
+                                                          child: Text(
+                                                            processData
+                                                                .stageProcess!
+                                                                .name as String,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .labelLarge,
+                                                          ),
                                                         ),
                                                         // Row(
                                                         //   mainAxisAlignment:

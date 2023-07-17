@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_blockchain/features/product/screens/detail_product_screen.dart';
 import 'package:mobile_app_blockchain/features/widgets/loader.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../models/product.dart';
 import '../../../models/productSC.dart';
+import '../../widgets/single_product.dart';
 import '../services/product_serviecs.dart';
 
 class JournalScreen extends StatefulWidget {
@@ -16,29 +18,45 @@ class JournalScreen extends StatefulWidget {
 
 class _JournalScreenState extends State<JournalScreen> {
   final ProductServices productServices = ProductServices();
+  bool shouldReload = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     fetchProduct();
+    setState(() {
+      shouldReload = true;
+    });
   }
 
-  List<ProductSC>? product;
+  List<Product>? product;
   Future fetchProduct() async {
-    product = await productServices.fetchAllProductsSC(context: context);
-    setState(() {});
+    product = await productServices.fetchAllProductsDelivery(context: context);
+    if (mounted) {
+      setState(() {});
+    }
     // print(product);
   }
+
+  // @override
+  // void dispose() {
+  //   // Hủy bỏ timer hoặc dừng lắng nghe animation
+  //   // Code dispose khác
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    if (shouldReload) {
+      fetchProduct();
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         titleSpacing: 20,
         title: Text(
-          "Journal",
+          "Thu hoạch",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
@@ -78,45 +96,100 @@ class _JournalScreenState extends State<JournalScreen> {
                           : Visibility(
                               child: RefreshIndicator(
                                 onRefresh: fetchProduct,
-                                child: ListView.builder(
-                                    itemCount: product!.length,
-                                    itemBuilder: (context, index) {
-                                      final productSC = product![index];
-                                      return Card(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8),
-                                          child: ListTile(
-                                            title: Text(
-                                              productSC.name,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                            subtitle: Text(
-                                              productSC.address,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                            trailing: Text(
-                                              productSC.status == 0
-                                                  ? "CREATED"
-                                                  : productSC.status == 1
-                                                      ? "UPDATED"
-                                                      : productSC.status == 2
-                                                          ? "DELETED"
-                                                          : productSC.status ==
-                                                                  3
-                                                              ? "DELIVERED"
-                                                              : "",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
+                                child: GridView.builder(
+                                  itemCount: product!.length,
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 0.8,
+                                    crossAxisSpacing: 20,
+                                    mainAxisSpacing: 24,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    final productData = product![index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DeatilProductScreen(
+                                                      product: productData,
+                                                    )));
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(.1),
+                                              blurRadius: 4.0,
+                                              spreadRadius: .05,
+                                            ), //BoxShadow
+                                          ],
                                         ),
-                                      );
-                                    }),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: SingleProduct(
+                                                      image:
+                                                          productData.images[0],
+                                                      height: 130),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            Align(
+                                              alignment: Alignment.center,
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    height: 15,
+                                                    width: 200,
+                                                    child: FittedBox(
+                                                      fit: BoxFit.contain,
+                                                      child: Text(
+                                                        productData.name,
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyLarge,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // Text(
+                                                  //   productData.name,
+                                                  //   style: Theme.of(context)
+                                                  //       .textTheme
+                                                  //       .labelLarge,
+                                                  // ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             )),
                 ),

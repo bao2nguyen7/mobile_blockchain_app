@@ -9,6 +9,6 @@ const double kTopPadding = 8.0; // default top padding
 const double kTextMediumSize = 16;
 const double kDefaultIconSize = 18;
 const double kMaxIconSize = 80;
-const double kMaxbtnSize = 150;
+const double kMaxbtnSize = 50;
 const double kDefaultFontSize = 35;
 const BorderRadius kDefaultBorderRadius = BorderRadius.all(Radius.circular(8));

@@ -20,19 +20,19 @@ class Categories extends StatelessWidget {
           children: [
             CategoryCard(
                 icon: AssetsHelper.createProduct,
-                text: "Create product",
+                text: "Tạo sản phẩm",
                 press: () {
                   Navigator.of(context).pushNamed(AddProductScreen.routeName);
                 }),
             CategoryCard(
                 icon: AssetsHelper.product,
-                text: "Product",
+                text: "Sản Phẩm",
                 press: () {
                   Navigator.of(context).pushNamed(ProductScreen.routeName);
                 }),
             CategoryCard(
                 icon: AssetsHelper.newFeed,
-                text: "Journal",
+                text: "Thu hoạch",
                 press: () {
                   Navigator.of(context).pushNamed(JournalScreen.routeName);
                 }),

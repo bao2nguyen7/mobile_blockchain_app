@@ -13,6 +13,7 @@ import '../../../core/helpers/image_helper.dart';
 import '../../../models/product.dart';
 import '../../../providers/user_providers.dart';
 import '../../home/screens/main_app_screen.dart';
+import '../../user/home_user/screens/main_app_screen.dart';
 import '../../widgets/btn_widget.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/single_product.dart';
@@ -28,23 +29,36 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   final ProductServices productServices = ProductServices();
+
+  bool shouldReload = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     fetchProduct();
+    setState(() {
+      shouldReload = true;
+    });
   }
+
+  final ButtonStyle style =
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   bool isLoading = true;
   List<Product>? product;
   Future fetchProduct() async {
     product = await productServices.fetchAllProducts(context: context);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
+
     // print(product);
   }
 
   void deleteProduct(String _id) {
     productServices.deleteProduct(context: context, id: _id);
+
     setState(() {});
     // print(product);
   }
@@ -52,16 +66,34 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    final user = Provider.of<UserProvider>(context).user;
+    if (shouldReload) {
+      fetchProduct();
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         titleSpacing: 20,
         title: Text(
-          "Product",
+          "Sản phẩm",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
         backgroundColor: ColorPalette.primaryColor,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                user.userType != "User"
+                    ? Navigator.of(context).pushNamed(MainAppScreen.routeName)
+                    : Navigator.of(context)
+                        .pushNamed(MainAppUserScreen.routeName);
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
       ),
       backgroundColor: ColorPalette.primaryColor,
       body: Container(
@@ -147,13 +179,16 @@ class _ProductScreenState extends State<ProductScreen> {
                                             children: [
                                               Stack(
                                                 children: [
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    child: SingleProduct(
-                                                        image: productData
-                                                            .images[0],
-                                                        height: 120),
+                                                  FittedBox(
+                                                    fit: BoxFit.contain,
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment.topRight,
+                                                      child: SingleProduct(
+                                                          image: productData
+                                                              .images[0],
+                                                          height: 140),
+                                                    ),
                                                   ),
                                                   Transform.translate(
                                                       offset: Offset(60, -40),
@@ -223,7 +258,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                                                       width: 30,
                                                                                     ),
                                                                                     Text(
-                                                                                      "Edit",
+                                                                                      "Chỉnh sửa",
                                                                                       style: Theme.of(context).textTheme.labelLarge,
                                                                                     )
                                                                                   ]),
@@ -234,7 +269,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                                               height: 18,
                                                                             ),
                                                                             GestureDetector(
-                                                                              onTap: () => deleteProduct(productData.id),
+                                                                              onTap: () => deleteProduct(productData.productId),
                                                                               child: Container(
                                                                                 height: 50,
                                                                                 width: 230,
@@ -247,7 +282,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                                                       width: 30,
                                                                                     ),
                                                                                     Text(
-                                                                                      "Delete",
+                                                                                      "Xoá",
                                                                                       style: Theme.of(context).textTheme.labelLarge,
                                                                                     )
                                                                                   ]),
@@ -269,7 +304,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                 ],
                                               ),
                                               const SizedBox(
-                                                height: 10,
+                                                height: 20,
                                               ),
                                               Align(
                                                 alignment: Alignment.center,
@@ -277,17 +312,17 @@ class _ProductScreenState extends State<ProductScreen> {
                                                   children: [
                                                     Container(
                                                       height: 15,
-                                                      width: 140,
+                                                      width: 200,
                                                       child: FittedBox(
-                                                        fit: BoxFit.scaleDown,
+                                                        fit: BoxFit.contain,
                                                         child: Text(
                                                           productData.name,
                                                           textAlign:
                                                               TextAlign.left,
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .displayMedium,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyLarge,
                                                         ),
                                                       ),
                                                     ),
@@ -297,24 +332,6 @@ class _ProductScreenState extends State<ProductScreen> {
                                                     //       .textTheme
                                                     //       .labelLarge,
                                                     // ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Icon(
-                                                            Icons.add_location),
-                                                        SizedBox(width: 5),
-                                                        Text(
-                                                          productData.address,
-                                                          style: TextStyle(
-                                                              fontSize: 10),
-                                                        )
-                                                      ],
-                                                    )
                                                   ],
                                                 ),
                                               ),

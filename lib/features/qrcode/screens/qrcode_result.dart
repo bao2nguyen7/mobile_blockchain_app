@@ -10,11 +10,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/dismenssion_constants.dart';
+import '../../../models/process.dart';
 import '../../../models/product.dart';
 import '../../../providers/user_providers.dart';
 import '../../../utils/utils.dart';
+import '../../home/screens/main_app_screen.dart';
+import '../../newfeed/services/process_services.dart';
 import '../../product/screens/add_tracking_screen.dart';
 import '../../product/screens/description_detail.dart';
+import '../../product/screens/qrcode_page.dart';
 import '../../product/services/product_serviecs.dart';
 import '../../product/widgets/customListitle.dart';
 import '../../widgets/button_widgets.dart';
@@ -34,6 +38,7 @@ class QRCodeResultScreen extends StatefulWidget {
 
 class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
   final ProductServices productServices = ProductServices();
+  final ProcessServices processServices = ProcessServices();
   int selectedImage = 0;
   bool isSeeAll = false;
   void isSeeAllCheck() {
@@ -42,11 +47,32 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
     });
   }
 
+  bool shouldReload = false;
   void initState() {
     // TODO: implement initState
+    setState(() {
+      shouldReload = true;
+    });
     super.initState();
-    fetchTracking();
     fetchProduct();
+    fetchTracking();
+    // fetchProcess();
+  }
+
+  String processID = "";
+  Product? product;
+  Future fetchProduct() async {
+    // tracking = await
+    product = await productServices.fetchDetailProducts(
+        context: context, id: widget.id);
+    print(product);
+    if (mounted) {
+      setState(() {
+        processID = product!.processId;
+        fetchProcess();
+      });
+    }
+    // print(product);
   }
 
   bool isLoading = true;
@@ -55,9 +81,11 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
     // tracking = await
     tracking =
         await productServices.fetchAllTracking(context: context, id: widget.id);
-    setState(() {
-      results = tracking;
-    });
+    if (mounted) {
+      setState(() {
+        results = tracking;
+      });
+    }
     // print(product);
   }
 
@@ -77,14 +105,27 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
     } // Refresh the UI
   }
 
-  Product? product;
-  Future fetchProduct() async {
-    // tracking = await
-    product = await productServices.fetchDetailProducts(
-        context: context, id: widget.id);
-    print(product);
-    setState(() {});
-    // print(product);
+  String? stagePlantCare = "";
+  String? stageBloom = "";
+  String? stageHarvest = "";
+  String? stageSell = "";
+  String? stagePlantSeed = "";
+  String? stageCover = "";
+  Process? process;
+  Future fetchProcess() async {
+    process = await processServices.fetchAllProcessTitle(
+        context: context, id: processID);
+    if (mounted) {
+      setState(() {
+        stageBloom = process!.stageBloom!.name;
+        stagePlantCare = process!.stagePlantCare!.name;
+        stageHarvest = process!.stageHarvest!.name;
+        stageSell = process!.stageSell!.name;
+        stagePlantSeed = process!.stagePlantSeeds!.name;
+        stageCover = process!.stageCover!.name;
+      });
+    }
+    // print(process!.stageBloom!.name);
   }
 
   _launchURL() async {
@@ -96,7 +137,6 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
     } else {
       print("URL can't be launched.");
       ;
-      showSnackBar(context, "URL can't be launched");
     }
   }
 
@@ -104,6 +144,9 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
     var size = MediaQuery.of(context).size;
+    // if (shouldReload) {
+    //   fetchProduct();
+    // }
     return product == null
         ? const Loader()
         : product!.name.isEmpty
@@ -212,8 +255,11 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                             children: [
                                               Container(
                                                 width: 250,
+                                                height: 80,
                                                 child: FittedBox(
-                                                  fit: BoxFit.contain,
+                                                  fit: BoxFit.scaleDown,
+                                                  alignment:
+                                                      Alignment.centerLeft,
                                                   child: Text(
                                                     product!.name,
                                                     textAlign: TextAlign.left,
@@ -223,11 +269,26 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                   ),
                                                 ),
                                               ),
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.add_location),
-                                                  Text(product!.address)
-                                                ],
+                                              SizedBox(height: 5),
+                                              Container(
+                                                width: 290,
+                                                height: 60,
+                                                child: Row(
+                                                  children: [
+                                                    Icon(Icons.add_location),
+                                                    Container(
+                                                      width: 250,
+                                                      child: Text(
+                                                        product!.address,
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -242,16 +303,40 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                       BorderRadius.all(
                                                     Radius.circular(20),
                                                   )),
-                                              child: QrImage(
-                                                data: product!.id,
-                                                version: QrVersions.auto,
-                                                size: 70.0,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              QRCodePage(
+                                                                id: product!
+                                                                    .productId,
+                                                              )));
+                                                },
+                                                child: QrImageView(
+                                                  data: product!.productId,
+                                                  version: QrVersions.auto,
+                                                  size: 70.0,
+                                                ),
                                               ),
                                             ),
                                           )
                                         ],
                                       ),
-                                      SizedBox(height: 15),
+                                      SizedBox(height: 12),
+                                      Align(
+                                        child: Container(
+                                          width: 500,
+                                          height: 0.5,
+                                          decoration: BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  255, 214, 216, 212),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
                                       Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -278,7 +363,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                     recognizer:
                                                         TapGestureRecognizer()
                                                           ..onTap = _launchURL,
-                                                    text: "Check now",
+                                                    text: "Kiểm tra",
                                                     style: TextStyle(
                                                         color: ColorPalette
                                                             .primaryColor,
@@ -286,13 +371,25 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                         fontWeight:
                                                             FontWeight.w800))),
                                           ]),
-                                      SizedBox(height: 35),
+                                      SizedBox(height: 20),
+                                      Align(
+                                        child: Container(
+                                          width: 500,
+                                          height: 0.5,
+                                          decoration: BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  255, 214, 216, 212),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                      SizedBox(height: 12),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "Description ",
+                                            "Mô tả ",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge,
@@ -304,12 +401,11 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           DetailDescription(
-                                                            description: product!
-                                                                .description,
+                                                            product: product!,
                                                           )));
                                             },
                                             child: Text(
-                                              "See All",
+                                              "Xem thêm",
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   decorationColor:
@@ -325,28 +421,40 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                             ? 3
                                             : product!.description.length,
                                       ),
-                                      SizedBox(height: 45),
+                                      SizedBox(height: 20),
+                                      Align(
+                                        child: Container(
+                                          width: 500,
+                                          height: 0.5,
+                                          decoration: BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  255, 214, 216, 212),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "Tracking : ${tracking.length}",
+                                            "Nhật ký : ${tracking.length}",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge,
                                           ),
                                           user.userType == "Farmer"
                                               ? ButtonWidget(
-                                                  title: "Add tracking",
+                                                  title: "Thêm",
                                                   onTap: () => {
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 AddTrackingScreen(
-                                                                  id: product!
-                                                                      .id,
+                                                                  product:
+                                                                      product!,
                                                                 )))
                                                   },
                                                 )
@@ -371,7 +479,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                 const EdgeInsets.symmetric(
                                                     vertical: 15,
                                                     horizontal: 15),
-                                            hintText: "Track title",
+                                            hintText: "Tên theo dõi",
                                             suffixIcon: Icon(Icons.search),
                                             border: OutlineInputBorder(
                                               borderRadius:
@@ -379,7 +487,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                               borderSide: const BorderSide(),
                                             )),
                                       ),
-                                      SizedBox(height: 10),
+                                      SizedBox(height: 5),
                                       Expanded(
                                         flex: 8,
                                         child: Container(
@@ -394,10 +502,10 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                             padding: const EdgeInsets.all(10),
                                             child: Column(
                                               children: [
-                                                tracking!.isEmpty
+                                                tracking!.isEmpty &&
+                                                        process == null
                                                     ? GestureDetector(
-                                                        child: Text(
-                                                            "Tracking is empty"))
+                                                        child: Text("Trống"))
                                                     : Expanded(
                                                         child: ListView.builder(
                                                           itemCount:
@@ -407,6 +515,8 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                               customListTile(
                                                                   results![
                                                                       index],
+                                                                  product!,
+                                                                  process!,
                                                                   context),
                                                         ),
                                                       ),

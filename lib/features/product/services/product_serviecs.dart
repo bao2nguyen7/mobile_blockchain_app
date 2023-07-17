@@ -12,33 +12,49 @@ import '../../../models/user.dart';
 import '../../../providers/user_providers.dart';
 import '../../../utils/constans.dart';
 import '../../../utils/utils.dart';
+import '../../home/screens/main_app_screen.dart';
 import '../screens/product_screen.dart';
 
 class ProductServices {
   void addProduct(
       {required BuildContext context,
+      required String processId,
       required String name,
       required String address,
       required String time,
       required String description,
-      required List<File> images}) async {
+      required List<File> images,
+      required List<File> certificates}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
-      final cloudinary = CloudinaryPublic('ds6usv4r6', 'iwveqhbf');
+      List<String> certificateUrls = [];
       List<String> imageUrls = [];
+      final cloudinary = CloudinaryPublic('ds6usv4r6', 'iwveqhbf');
       for (int i = 0; i < images.length; i++) {
         CloudinaryResponse res = await cloudinary.uploadFile(
           CloudinaryFile.fromFile(images[i].path, folder: name),
         );
+        print(res);
         imageUrls.add(res.secureUrl);
       }
+      for (int i = 0; i < certificates.length; i++) {
+        CloudinaryResponse respone = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(certificates[i].path, folder: name),
+        );
+        print(respone);
+        certificateUrls.add(respone.secureUrl);
+      }
+
       Product product = Product(
           id: '',
           name: name,
           address: address,
           time: time,
+          productId: '',
           description: description,
           images: imageUrls,
+          certificates: certificateUrls,
+          processId: processId,
           url: '',
           tracking: []);
       http.Response res =
@@ -55,8 +71,9 @@ class ProductServices {
             User user = userProvider.user
                 .copyWith(products: jsonDecode(res.body)['products']);
             userProvider.setUserFromModel(user);
-            showSnackBar(context, 'Product added successfully');
-            Navigator.pop(context);
+
+            showSnackBar(context, 'Sản phẩm được thêm thành công');
+            // Navigator.of(context).pushNamed(ProductScreen.routeName);
           });
     } catch (e) {
       showSnackBar(context, e.toString());
@@ -69,8 +86,10 @@ class ProductServices {
       required String name,
       required String address,
       required String time,
+      required String processId,
       required String description,
-      required List<String> images}) async {
+      required List<String> images,
+      required List<String> certificate}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       // final cloudinary = CloudinaryPublic('ds6usv4r6', 'iwveqhbf');
@@ -86,9 +105,12 @@ class ProductServices {
           name: name,
           address: address,
           time: time,
+          productId: '',
           description: description,
+          processId: processId,
           url: '',
           images: images,
+          certificates: certificate,
           tracking: []);
       http.Response res = await http.put(
           Uri.parse('${Constants.uri}/product/update-product/$id'),
@@ -104,8 +126,8 @@ class ProductServices {
             User user = userProvider.user
                 .copyWith(products: jsonDecode(res.body)['products']);
             userProvider.setUserFromModel(user);
-            showSnackBar(context, 'Update product successfully');
-            // Navigator.of(context).pop();
+            showSnackBar(context, 'Cập nhật sản phẩm thành công');
+            Navigator.of(context).pop();
           });
     } catch (e) {
       showSnackBar(context, e.toString());
@@ -134,7 +156,7 @@ class ProductServices {
         response: res,
         context: context,
         onSuccess: () {
-          showSnackBar(context, 'Delete product successfully');
+          showSnackBar(context, 'Xoá sản phẩm thành công');
         },
       );
     } catch (e) {
@@ -148,6 +170,7 @@ class ProductServices {
       required String name,
       required String time,
       required String description,
+      required List<String> notes,
       required List<File> images}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
@@ -164,6 +187,9 @@ class ProductServices {
           name: name,
           time: time,
           url: '',
+          productId: '',
+          trackingId: '',
+          notes: notes,
           description: description,
           images: imageUrls);
       http.Response res = await http.post(
@@ -177,8 +203,55 @@ class ProductServices {
           response: res,
           context: context,
           onSuccess: () {
-            showSnackBar(context, 'Tracking added successfully');
-            Navigator.pop(context);
+            showSnackBar(context, 'Thêm theo dõi thành công');
+            Navigator.of(context).pop();
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  void addTrackingDeliveried(
+      {required BuildContext context,
+      required String id,
+      required String name,
+      required String time,
+      required String description,
+      required List<String> notes,
+      required List<File> images}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    try {
+      final cloudinary = CloudinaryPublic('ds6usv4r6', 'iwveqhbf');
+      List<String> imageUrls = [];
+      for (int i = 0; i < images.length; i++) {
+        CloudinaryResponse res = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(images[i].path, folder: name),
+        );
+        imageUrls.add(res.secureUrl);
+      }
+      Tracking tracking = Tracking(
+          id: '',
+          name: name,
+          time: time,
+          url: '',
+          productId: '',
+          trackingId: '',
+          notes: notes,
+          description: description,
+          images: imageUrls);
+      http.Response res =
+          await http.post(Uri.parse('${Constants.uri}/tracking/deliveried/$id'),
+              headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'x-auth-token': userProvider.user.token,
+              },
+              body: tracking.toJson());
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, 'Thêm thông tin vận chuyển thành công');
+            // Navigator.pop(context);
           });
     } catch (e) {
       showSnackBar(context, e.toString());
@@ -203,16 +276,90 @@ class ProductServices {
         onSuccess: () {
           final json = jsonDecode(res.body);
           final result = json["data"];
-
+          final resultSC = json["dataSC"];
           // print(json["data"]["products"]);
           for (int i = 0; i < result.length; i++) {
-            if (result[i]["userId"] == userProvider.user.id)
-              productList.add(Product.fromJson(jsonEncode(result[i])));
+            for (int j = 0; j < resultSC.length; j++) {
+              if (result[i]["userId"] == userProvider.user.id &&
+                  result[i]["productId"] == resultSC[j]["pid"] &&
+                  resultSC[j]["status"] != 3 &&
+                  resultSC[j]["status"] != 2) {
+                productList.add(Product.fromJson(jsonEncode(result[i])));
+              }
+            }
           }
-          // for (int i = 0; i < productList.length; i++) {
-          //   print(productList[i].name);
-          // }
-          print(productList);
+          // print(productList);
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return productList;
+  }
+
+  Future<List<Product>> fetchAllProductsDelivery(
+      {required BuildContext context}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Product> productList = [];
+    try {
+      http.Response res = await http
+          .get(Uri.parse('${Constants.uri}/product/get-product'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          final json = jsonDecode(res.body);
+          final result = json["data"];
+          final resultSC = json["dataSC"];
+          // print(json["data"]["products"]);
+          for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < resultSC.length; j++) {
+              if (result[i]["userId"] == userProvider.user.id &&
+                  result[i]["productId"] == resultSC[j]["pid"] &&
+                  resultSC[j]["status"] == 3) {
+                productList.add(Product.fromJson(jsonEncode(result[i])));
+              }
+            }
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return productList;
+  }
+
+  Future<List<Product>> fetchAllProductsUser(
+      {required BuildContext context}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Product> productList = [];
+    try {
+      http.Response res = await http
+          .get(Uri.parse('${Constants.uri}/product/get-product'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          final json = jsonDecode(res.body);
+          final result = json["data"];
+          final resultSC = json["dataSC"];
+          // print(json["data"]["products"]);
+          for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < resultSC.length; j++) {
+              if (result[i]["productId"] == resultSC[j]["pid"] &&
+                  resultSC[j]["status"] == 3) {
+                productList.add(Product.fromJson(jsonEncode(result[i])));
+              }
+            }
+          }
         },
       );
     } catch (e) {
@@ -238,14 +385,10 @@ class ProductServices {
         onSuccess: () {
           final json = jsonDecode(res.body);
           final result = json["dataSC"];
-          // print(json["data"]["products"]);
           for (int i = 0; i < result.length; i++) {
             if (result[i]["uid"] == userProvider.user.id)
               productList.add(ProductSC.fromJson(jsonEncode(result[i])));
           }
-          // for (int i = 0; i < productList.length; i++) {
-          //   print(productList[i].name);
-          // }
         },
       );
     } catch (e) {
@@ -253,35 +396,6 @@ class ProductServices {
     }
     return productList;
   }
-
-  //Recommended product list
-  // Future<List<Product>> fetchProducts({required BuildContext context}) async {
-  //   List<Product> productAll = [];
-  //   try {
-  //     http.Response res = await http
-  //         .get(Uri.parse('${Constants.uri}/product/get-product'), headers: {
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     });
-
-  //     httpErrorHandle(
-  //       response: res,
-  //       context: context,
-  //       onSuccess: () {
-  //         final json = jsonDecode(res.body);
-  //         final item = json["data"];
-  //         // print(item);
-  //         // print(json["data"]["products"]);
-  //         for (int i = 0; i < item.length; i++) {
-  //           productAll.add(Product.fromJson(jsonEncode(item[i])));
-  //         }
-  //         print(productAll);
-  //       },
-  //     );
-  //   } catch (e) {
-  //     showSnackBar(context, e.toString());
-  //   }
-  //   return productAll;
-  // }
 
   Future<Product> fetchDetailProducts(
       {required BuildContext context, required String id}) async {
@@ -291,9 +405,12 @@ class ProductServices {
         name: '',
         address: '',
         time: '',
+        productId: '',
         description: '',
+        processId: '',
         url: '',
         images: [],
+        certificates: [],
         tracking: []);
     try {
       http.Response res = await http
@@ -308,11 +425,33 @@ class ProductServices {
         onSuccess: () {
           final json = jsonDecode(res.body);
           final item = json["data"];
-          print(item);
-          // print(item);
-          // print(json["data"]["products"]);
           productAll = Product.fromJson(jsonEncode(item));
-          print(productAll);
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return productAll;
+  }
+
+  Future<int> fetchDetailProductsBC(
+      {required BuildContext context, required String id}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    int productAll = 0;
+    try {
+      http.Response res = await http
+          .get(Uri.parse('${Constants.uri}/product/get-product/$id'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          final json = jsonDecode(res.body);
+          final itemBC = json["dataBC"][6];
+          productAll = itemBC;
         },
       );
     } catch (e) {
@@ -338,17 +477,12 @@ class ProductServices {
         context: context,
         onSuccess: () {
           final json = jsonDecode(res.body);
-          // name = json["data"]["tracking"];
-          // print(json["data"]["tracking"]);
           final result = json["data"];
-          // print(json["data"]["tracking"]);
           for (int i = 0; i < result.length; i++) {
-            if (result[i]["productID"] == id) {
+            if (result[i]["productId"] == id) {
               trackingList.add(Tracking.fromJson(jsonEncode(result[i])));
             }
           }
-          // print("TrackingList: ");
-          // print(trackingList);
         },
       );
     } catch (e) {

@@ -38,6 +38,7 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.tracking.name),
@@ -90,7 +91,7 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: Text(
-                                "Tracking Name",
+                                "Tên theo dõi",
                                 style: TextStyle(
                                   color: Colors.white,
                                 ),
@@ -102,7 +103,7 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
                             text: TextSpan(
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = _launchURL,
-                                text: "Check now",
+                                text: "Kiểm tra",
                                 style: TextStyle(
                                     color: ColorPalette.primaryColor,
                                     fontSize: 16,
@@ -117,6 +118,23 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
                       style: TextStyle(color: Colors.black, fontSize: 32),
                     ),
                     SizedBox(
+                      height: 8.0,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Thời gian được tạo: ",
+                          style: TextStyle(
+                            color: Colors.black38,
+                          ),
+                        ),
+                        Text(
+                          widget.tracking.time,
+                          style: TextStyle(color: Colors.black38),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
                       height: 15.0,
                     ),
                     Container(
@@ -126,12 +144,37 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Text(
-                        "Description",
+                        "Mô tả",
                         style: TextStyle(
                           color: Colors.white,
                         ),
                       ),
                     ),
+                    // SizedBox(
+                    //   height: 5.0,
+                    // ),
+                    // widget.tracking.notes.length != 0
+                    //     ? Container(
+                    //         height: 100,
+                    //         child: ListView.builder(
+                    //             itemCount: widget.tracking.notes.length,
+                    //             itemBuilder: (context, index) {
+                    //               return ListTile(
+                    //                 title: Padding(
+                    //                   padding: const EdgeInsets.symmetric(
+                    //                       vertical: 5),
+                    //                   child: Text(
+                    //                     widget.tracking.notes[index],
+                    //                     style: TextStyle(
+                    //                       fontWeight: FontWeight.bold,
+                    //                       fontSize: 16.0,
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //               );
+                    //             }),
+                    //       )
+                    //     : SizedBox(),
                     SizedBox(
                       height: 8.0,
                     ),
@@ -143,7 +186,7 @@ class _TrackingDetailScreenState extends State<TrackingDetailScreen> {
                       ),
                     )
                   ]),
-            )
+            ),
           ],
         ),
       ),

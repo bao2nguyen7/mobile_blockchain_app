@@ -31,7 +31,7 @@ class SingleProduct extends StatelessWidget {
           color: Colors.white,
         ),
         child: Container(
-            width: 180,
+            width: 150,
             // padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
             child: image != null

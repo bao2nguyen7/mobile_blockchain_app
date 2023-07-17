@@ -69,21 +69,21 @@ class _IntroScreenState extends State<IntroScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: kMediumPadding * 6),
+                    SizedBox(height: kMediumPadding * 8),
                     ButtonWidget(
-                        title: 'Start',
+                        title: 'Bắt đầu',
                         onTap: () {
                           Navigator.of(context)
                               .pushNamed(LoginScreen.routeName);
                         }),
                     SizedBox(height: kMediumPadding),
-                    Opacity(
-                      opacity: 0.8,
-                      child: ButtonWidget(
-                        title: 'QR Code ',
-                        onTap: scanBarCode,
-                      ),
-                    )
+                    // Opacity(
+                    //   opacity: 0.8,
+                    //   child: ButtonWidget(
+                    //     title: 'QR Code ',
+                    //     onTap: scanBarCode,
+                    //   ),
+                    // )
                   ],
                 ),
               ),

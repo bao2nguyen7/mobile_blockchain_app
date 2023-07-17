@@ -8,6 +8,7 @@ import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../providers/user_providers.dart';
 import '../../home/screens/main_app_screen.dart';
+import '../../user/home_user/screens/main_app_screen.dart';
 import '../../widgets/button_widgets.dart';
 import '../../widgets/richText_widget.dart';
 import '../../widgets/textfieldName_widget.dart';
@@ -42,7 +43,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         centerTitle: true,
         titleSpacing: 20,
         title: Text(
-          "My Account",
+          "Tài khoản",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
@@ -52,7 +53,10 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
             return IconButton(
               icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                Navigator.of(context).pushNamed(MainAppScreen.routeName);
+                user.userType != "User"
+                    ? Navigator.of(context).pushNamed(MainAppScreen.routeName)
+                    : Navigator.of(context)
+                        .pushNamed(MainAppUserScreen.routeName);
               },
               tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
             );
@@ -97,7 +101,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Name',
+                                      'Tên',
                                       style: TextStyle(
                                           color: ColorPalette.text1Color,
                                           fontSize: 16,
@@ -113,7 +117,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Role',
+                                      'Vai trò',
                                       style: TextStyle(
                                           color: ColorPalette.text1Color,
                                           fontSize: 16,
@@ -125,22 +129,6 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                                 reusableTextFiledName(
                                     user.userType, _roleTextController, false),
                                 SizedBox(height: kDefaultPadding * 2),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Blockchain Address',
-                                      style: TextStyle(
-                                          color: ColorPalette.text1Color,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: kDefaultPadding / 2),
-                                reusableTextFiledName("Blockchain Address",
-                                    _codeTextController, false),
-                                SizedBox(height: kDefaultPadding * 4),
                               ],
                             ),
                           )),

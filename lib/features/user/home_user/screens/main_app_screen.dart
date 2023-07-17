@@ -15,6 +15,7 @@ import '../../../../core/constants/color_constants.dart';
 import '../../../../core/constants/dismenssion_constants.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
+import '../../../product/screens/product_user_screen.dart';
 import '../../../qrcode/screens/qrcode_result.dart';
 
 class MainAppUserScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _MainAppUserScreenState extends State<MainAppUserScreen> {
 
   List<Widget> pages = const [
     HomeUserScreen(),
-    ProductScreen(),
+    ProductUserScreen(),
     NewFeedScreen(),
     ProfileScreen()
   ];

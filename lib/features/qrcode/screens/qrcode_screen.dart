@@ -16,8 +16,8 @@ class QRCodeScreen extends StatefulWidget {
 
 class _QRCodeScreenState extends State<QRCodeScreen> {
   String? scanResult = "";
-  String? scan;
-  Future scanBarCode() async {
+  Future<void> scanBarCode() async {
+    String? scan;
     try {
       scan = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', "Cancel", true, ScanMode.QR);
@@ -26,8 +26,12 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
       });
       // Navigator.of(context).pushNamed(QRCodeResultScreen.routeName);
     } on PlatformException {
-      scanResult = "Fail";
+      scan = "Fail";
     }
+    if (!mounted) return;
+    setState(() {
+      this.scanResult = scan;
+    });
   }
 
   @override

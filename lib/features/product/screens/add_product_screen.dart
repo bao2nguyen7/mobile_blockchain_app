@@ -6,7 +6,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
@@ -20,6 +19,7 @@ import '../../../core/constants/dismenssion_constants.dart';
 import '../../../core/constants/utils.dart';
 import '../../../models/product.dart';
 import '../../../models/user.dart';
+import '../../../models/process.dart';
 import '../../../providers/user_providers.dart';
 import '../../newfeed/services/process_services.dart';
 import '../services/product_serviecs.dart';
@@ -51,26 +51,39 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   String valueChoose = "";
-  List<String> process = [];
+
+  List<Process> process = [];
   Future fetchProcess() async {
-    process = await processServices.fetchAllProcessTitle(context: context);
-    print(process);
+    process = await processServices.fetchAllProcess(context: context);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   List<File> images = [];
+  List<File> certificate = [];
   final _addProductFormKey = GlobalKey<FormState>();
   //add-Product
   void addProduct() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
     if (_addProductFormKey.currentState!.validate() && images.isNotEmpty) {
       productServices.addProduct(
-        context: context,
-        name: _nameTextController.text,
-        description: _descriptionTextController.text,
-        address: _addressTextController.text,
-        time: timeinput.text,
-        images: images,
-      );
+          context: context,
+          name: _nameTextController.text,
+          description: _descriptionTextController.text,
+          address: _addressTextController.text,
+          processId: valueChoose,
+          time: timeinput.text,
+          images: images,
+          certificates: certificate);
     }
+    Navigator.of(context).pop();
   }
 
   void selectImages() async {
@@ -78,6 +91,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
     setState(() {
       images = res;
     });
+  }
+
+  void selectImagesCertificate() async {
+    var res = await pickImages();
+    setState(() {
+      certificate = res;
+    });
+    print(certificate);
   }
 
   DateTime _chosenDateTime = DateTime.now();
@@ -135,7 +156,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Add Product",
+          "Thêm sản phẩm",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
@@ -179,27 +200,27 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Product Name"),
+                                    reuseableRichText("Tên sản phẩm"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName(
-                                    "Product Name", _nameTextController, false),
-                                SizedBox(height: kDefaultPadding * 2),
+                                    "Tên sản phẩm", _nameTextController, false),
+                                SizedBox(height: kDefaultPadding),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Address"),
+                                    reuseableRichText("Địa chỉ"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName(
-                                    "Address", _addressTextController, false),
-                                SizedBox(height: kDefaultPadding * 2),
+                                    "Địa chỉ", _addressTextController, false),
+                                SizedBox(height: kDefaultPadding),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Process"),
+                                    reuseableRichText("Qui trình"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
@@ -214,7 +235,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   ),
                                   buttonStyleData: ButtonStyleData(
                                     height: 60,
-                                    width: 160,
+                                    width: 170,
                                     padding: const EdgeInsets.only(
                                         left: 11, right: 16),
                                     decoration: BoxDecoration(
@@ -235,14 +256,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                         width: 10,
                                       ),
                                       const Text(
-                                        'Choose Process',
+                                        'Chọn qui trình',
                                         style: TextStyle(fontSize: 14),
                                       ),
                                     ],
                                   ),
                                   items: process
                                       .map((item) => DropdownMenuItem<String>(
-                                            value: item,
+                                            value: item.sId,
                                             child: Row(
                                               children: [
                                                 Icon(
@@ -252,10 +273,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                                 SizedBox(
                                                   width: 5,
                                                 ),
-                                                Text(
-                                                  item,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
+                                                Container(
+                                                  width: 270,
+                                                  child: Text(
+                                                    item.stageProcess!.name
+                                                        as String,
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -264,19 +289,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                       .toList(),
                                   validator: (value) {
                                     if (value == null) {
-                                      return 'Please select gender.';
+                                      return 'Hãy chọn qui trình.';
                                     }
                                     return null;
                                   },
                                   onChanged: (value) {
                                     setState(() {
                                       valueChoose = value.toString();
-                                      print(valueChoose);
                                     });
                                   },
                                   onSaved: (value) {
                                     valueChoose = value.toString();
-                                    print(valueChoose);
                                   },
                                   iconStyleData: const IconStyleData(
                                     icon: Icon(
@@ -291,18 +314,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: kDefaultPadding * 2),
+                                SizedBox(height: kDefaultPadding),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Time"),
+                                    reuseableRichText("Thời gian"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 TextFormField(
                                     controller: timeinput,
                                     decoration: InputDecoration(
-                                        labelText: "Time",
+                                        labelText: "Thời gian",
                                         labelStyle: TextStyle(
                                             color: ColorPalette.subTitleColor
                                                 .withOpacity(0.9)),
@@ -321,10 +344,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     keyboardType: TextInputType.emailAddress,
                                     validator: (text) {
                                       if (text == null || text.isEmpty) {
-                                        return 'Can\'t be empty';
+                                        return 'Không thể thiếu';
                                       }
                                       if (text.length < 2) {
-                                        return 'Too short';
+                                        return 'Quá ngắn';
                                       }
                                       return null;
                                     },
@@ -335,7 +358,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Image"),
+                                    reuseableRichText("Hình ảnh sản phẩm"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
@@ -386,7 +409,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                                 ),
                                                 const SizedBox(height: 15),
                                                 Text(
-                                                  'Select Product Images',
+                                                  'Chọn hình ảnh',
                                                   style: TextStyle(
                                                     fontSize: 15,
                                                     color: Colors.grey.shade400,
@@ -401,15 +424,81 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Description"),
+                                    reuseableRichText("Hình ảnh chứng chỉ"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
-                                reusableTextFiledName("Description",
-                                    _descriptionTextController, true),
+                                certificate.isNotEmpty
+                                    ? GestureDetector(
+                                        onTap: selectImagesCertificate,
+                                        child: CarouselSlider(
+                                          items: certificate.map(
+                                            (i) {
+                                              return Builder(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Image.file(
+                                                  i,
+                                                  fit: BoxFit.cover,
+                                                  height: 200,
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          options: CarouselOptions(
+                                            viewportFraction: 1,
+                                            height: 200,
+                                          ),
+                                        ),
+                                      )
+                                    : GestureDetector(
+                                        onTap: selectImagesCertificate,
+                                        child: DottedBorder(
+                                          borderType: BorderType.RRect,
+                                          radius: const Radius.circular(10),
+                                          dashPattern: const [10, 4],
+                                          strokeCap: StrokeCap.round,
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 150,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Icon(
+                                                  Icons.folder_open,
+                                                  size: 40,
+                                                ),
+                                                const SizedBox(height: 15),
+                                                Text(
+                                                  'Chọn hình ảnh',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.grey.shade400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                SizedBox(height: kDefaultPadding * 2),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    reuseableRichText("Mô tả"),
+                                  ],
+                                ),
+                                SizedBox(height: kDefaultPadding / 2),
+                                reusableTextFiledName(
+                                    "Mô tả", _descriptionTextController, true),
                                 SizedBox(height: kDefaultPadding * 2),
                                 ButtonWidget(
-                                  title: "Add",
+                                  title: "Thêm",
                                   onTap: addProduct,
                                 )
                               ],

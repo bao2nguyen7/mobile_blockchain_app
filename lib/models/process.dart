@@ -45,8 +45,8 @@ class Process {
   StageProcess? stageProcess;
   StagePlantSeeds? stagePlantSeeds;
   StagePlantCare? stagePlantCare;
-  StagePlantSeeds? stageBloom;
-  StagePlantSeeds? stageCover;
+  StageBloom? stageBloom;
+  StageCover? stageCover;
   StageHarvest? stageHarvest;
   StageSell? stageSell;
   String? sId;
@@ -73,10 +73,10 @@ class Process {
         ? new StagePlantCare.fromJson(json['stagePlantCare'])
         : null;
     stageBloom = json['stageBloom'] != null
-        ? new StagePlantSeeds.fromJson(json['stageBloom'])
+        ? new StageBloom.fromJson(json['stageBloom'])
         : null;
     stageCover = json['stageCover'] != null
-        ? new StagePlantSeeds.fromJson(json['stageCover'])
+        ? new StageCover.fromJson(json['stageCover'])
         : null;
     stageHarvest = json['stageHarvest'] != null
         ? new StageHarvest.fromJson(json['stageHarvest'])
@@ -180,6 +180,44 @@ class StagePlantCare {
     data['description'] = this.description;
     data['water'] = this.water;
     data['fertilizer'] = this.fertilizer;
+    return data;
+  }
+}
+
+class StageBloom {
+  String? name;
+  String? description;
+
+  StageBloom({this.name, this.description});
+
+  StageBloom.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    description = json['description'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['description'] = this.description;
+    return data;
+  }
+}
+
+class StageCover {
+  String? name;
+  String? description;
+
+  StageCover({this.name, this.description});
+
+  StageCover.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    description = json['description'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['description'] = this.description;
     return data;
   }
 }

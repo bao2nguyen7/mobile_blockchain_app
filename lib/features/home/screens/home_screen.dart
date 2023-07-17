@@ -47,14 +47,18 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Product>? product = [];
   Future fetchProduct() async {
     product = await productServices.fetchAllProducts(context: context);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
     // print(product);
   }
 
   List<Process>? process = [];
   Future fetchProcess() async {
     process = await processServices.fetchAllProcess(context: context);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
     // print(product);
   }
 
@@ -79,25 +83,32 @@ class _HomeScreenState extends State<HomeScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RichText(
-                text: TextSpan(
-                    text: "Hi Famer, ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black38,
-                        fontSize: 20),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: user.name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54,
-                              fontSize: 18))
-                    ]),
+              Container(
+                width: 250,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: RichText(
+                    text: TextSpan(
+                        text: "Xin chào nông dân, ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black38,
+                            fontSize: 17),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: user.name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                  fontSize: 17))
+                        ]),
+                  ),
+                ),
               ),
               SizedBox(height: 5),
               Text(
-                'Have a good day',
+                'Chúc một ngày tốt lành',
                 style: TextStyle(color: Colors.black54, fontSize: 14),
               ),
             ],
@@ -142,8 +153,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         flex: 2,
                         child: Container(
-                          width: size.width,
-                          height: kMaxbtnSize,
+                          // width: size.width,
+                          // height: kMaxbtnSize,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(kDefaultPadding)),
@@ -152,76 +163,76 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       SizedBox(height: kDefaultPadding),
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Popular product",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                              ),
-                              TextButton(
-                                style: flatButtonStyle,
-                                onPressed: () {},
-                                child: Text(
-                                  "More",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Container(
-                            height: 160,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: product!.length,
-                                itemBuilder: (context, index) {
-                                  final item = product![index];
-                                  return Container(
-                                    margin: const EdgeInsets.only(right: 10),
-                                    decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 232, 228, 224),
-                                        border: Border.all(
-                                            color: Color.fromARGB(
-                                                255, 209, 205, 205)),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Column(
-                                      children: [
-                                        SingleProduct(
-                                            image: item.images.length > 0
-                                                ? item.images[0]
-                                                : Constants.loading,
-                                            height: 120),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          item.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  height: 1.5),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          )
-                        ],
-                      ),
+                      // Column(
+                      //   children: [
+                      //     Row(
+                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //       children: [
+                      //         Text(
+                      //           "Popular product",
+                      //           style: Theme.of(context)
+                      //               .textTheme
+                      //               .headlineSmall!
+                      //               .copyWith(
+                      //                   fontWeight: FontWeight.bold,
+                      //                   fontSize: 20),
+                      //         ),
+                      //         TextButton(
+                      //           style: flatButtonStyle,
+                      //           onPressed: () {},
+                      //           child: Text(
+                      //             "More",
+                      //             style: TextStyle(color: Colors.white),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //     SizedBox(
+                      //       height: 5,
+                      //     ),
+                      //     Container(
+                      //       height: 160,
+                      //       child: ListView.builder(
+                      //           scrollDirection: Axis.horizontal,
+                      //           itemCount: product!.length,
+                      //           itemBuilder: (context, index) {
+                      //             final item = product![index];
+                      //             return Container(
+                      //               margin: const EdgeInsets.only(right: 10),
+                      //               decoration: BoxDecoration(
+                      //                   color:
+                      //                       Color.fromARGB(255, 232, 228, 224),
+                      //                   border: Border.all(
+                      //                       color: Color.fromARGB(
+                      //                           255, 209, 205, 205)),
+                      //                   borderRadius:
+                      //                       BorderRadius.circular(15)),
+                      //               child: Column(
+                      //                 children: [
+                      //                   SingleProduct(
+                      //                       image: item.images.length > 0
+                      //                           ? item.images[0]
+                      //                           : Constants.loading,
+                      //                       height: 120),
+                      //                   SizedBox(
+                      //                     height: 10,
+                      //                   ),
+                      //                   Text(
+                      //                     item.name,
+                      //                     style: Theme.of(context)
+                      //                         .textTheme
+                      //                         .bodyLarge!
+                      //                         .copyWith(
+                      //                             fontWeight: FontWeight.bold,
+                      //                             height: 1.5),
+                      //                   )
+                      //                 ],
+                      //               ),
+                      //             );
+                      //           }),
+                      //     )
+                      //   ],
+                      // ),
                       const SizedBox(
                         height: 5,
                       ),
@@ -229,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "New Feed",
+                            "Bảng tin",
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall!
@@ -243,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   .pushNamed(NewFeedScreen.routeName);
                             },
                             child: Text(
-                              "More",
+                              "Xem thêm",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -253,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 5,
                       ),
                       Expanded(
-                        flex: 6,
+                        flex: 9,
                         child: SafeArea(
                             child: Container(
                           decoration: BoxDecoration(
@@ -303,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius:
-                                                    BorderRadius.circular(20),
+                                                    BorderRadius.circular(7),
                                                 boxShadow: [
                                                   BoxShadow(
                                                     color: Colors.black
@@ -333,36 +344,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         height: 120),
                                                   ),
                                                   const SizedBox(
-                                                    height: 10,
+                                                    height: 2,
                                                   ),
                                                   Align(
                                                     alignment: Alignment.center,
                                                     child: Column(
                                                       children: [
-                                                        Text(
-                                                          processData
-                                                              .stageProcess!
-                                                              .name as String,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .labelLarge,
+                                                        SizedBox(
+                                                          height: 4,
                                                         ),
-                                                        // Row(
-                                                        //   mainAxisAlignment:
-                                                        //       MainAxisAlignment
-                                                        //           .center,
-                                                        //   children: [
-                                                        //     Icon(
-                                                        //         Icons.add_location),
-                                                        //     SizedBox(width: 5),
-                                                        //     Text(
-                                                        //       processData.address,
-                                                        //       style: TextStyle(
-                                                        //           fontSize: 10),
-                                                        //     )
-                                                        //   ],
-                                                        // )
+                                                        Container(
+                                                          width: 200,
+                                                          height: 50,
+                                                          child: Text(
+                                                            processData
+                                                                .stageProcess!
+                                                                .name as String,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .labelLarge,
+                                                          ),
+                                                        ),
                                                       ],
                                                     ),
                                                   ),

@@ -43,20 +43,20 @@ class _MainAppScreenState extends State<MainAppScreen> {
   List<String> titleList = ['Home', 'Product', 'New Feeds', 'Profile'];
 
   String? scanResult = "";
-  Future scanBarCode() async {
+  Future<void> scanBarCode() async {
     String scanResult;
     try {
       scanResult = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', "Cancel", true, ScanMode.QR);
       print(scanResult);
-      if (scanResult != -1) {
+      if (scanResult != null) {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => QRCodeResultScreen(
                       id: scanResult,
                     )));
-      } else if (scanResult == -1) {
+      } else {
         Navigator.of(context).pop();
       }
     } on PlatformException {

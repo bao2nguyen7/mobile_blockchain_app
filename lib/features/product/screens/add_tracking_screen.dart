@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,46 +19,135 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../core/constants/utils.dart';
 import '../../../models/product.dart';
+import '../../../models/process.dart';
 import '../../newfeed/services/process_services.dart';
 import '../services/product_serviecs.dart';
 
 class AddTrackingScreen extends StatefulWidget {
-  String id;
+  Product product;
   AddTrackingScreen({
     Key? key,
-    required this.id,
+    required this.product,
   }) : super(key: key);
   @override
   State<AddTrackingScreen> createState() => _AddTrackingScreenState();
 }
 
 class _AddTrackingScreenState extends State<AddTrackingScreen> {
-  TextEditingController _nameTextController = TextEditingController();
+  TextEditingController _waterTextController = TextEditingController();
+  TextEditingController _quantityTextController = TextEditingController();
+  TextEditingController _fertilizierTextController = TextEditingController();
+  TextEditingController _purchasingunitTextController = TextEditingController();
+
   TextEditingController _addressTextController = TextEditingController();
   TextEditingController _descriptionTextController = TextEditingController();
+
   TextEditingController timeinput = TextEditingController();
   final ProductServices productServices = ProductServices();
-  String _id = "";
+  final ProcessServices processServices = ProcessServices();
+
   @override
   void initState() {
     // TODO: implement initState
-    _id = widget.id;
     super.initState();
+    fetchProcess();
   }
 
   List<File> images = [];
+  List<String> notes = [];
+
   final _addTrackingFormKey = GlobalKey<FormState>();
   void addTracking() {
-    if (_addTrackingFormKey.currentState!.validate() && images.isNotEmpty) {
-      productServices.addTracking(
-        id: _id,
+    showDialog(
         context: context,
-        name: _nameTextController.text,
-        description: _descriptionTextController.text,
-        time: timeinput.text,
-        images: images,
-      );
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+    if (_addTrackingFormKey.currentState!.validate() && images.isNotEmpty) {
+      if (valueChoose == nameStage()[1]) {
+        notes.add("Watering Time " + _waterTextController.text);
+        notes.add("Fertilizier " + _fertilizierTextController.text);
+      } else if (valueChoose == nameStage()[4]) {
+        notes.add("Quantity " + _quantityTextController.text);
+      } else if (valueChoose == nameStage()[5]) {
+        notes.add("PurchasingUnit " + _purchasingunitTextController.text);
+      }
+      //pop dialog
+      productServices.addTracking(
+          id: widget.product.productId,
+          context: context,
+          name: valueChoose,
+          description: _descriptionTextController.text,
+          time: timeinput.text,
+          images: images,
+          notes: notes);
     }
+    Navigator.of(context).pop();
+  }
+
+  void addTrackingDeliveried() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+    if (_addTrackingFormKey.currentState!.validate() && images.isNotEmpty) {
+      if (valueChoose == nameStage()[1]) {
+        notes.add("Watering Time " + _waterTextController.text);
+        notes.add("Fertilizier " + _fertilizierTextController.text);
+      } else if (valueChoose == nameStage()[4]) {
+        notes.add("Quantity " + _quantityTextController.text);
+      } else if (valueChoose == nameStage()[5]) {
+        notes.add("PurchasingUnit " + _purchasingunitTextController.text);
+      }
+      productServices.addTrackingDeliveried(
+          id: widget.product.productId,
+          context: context,
+          name: valueChoose,
+          description: _descriptionTextController.text,
+          time: timeinput.text,
+          images: images,
+          notes: notes);
+    }
+    Navigator.of(context).pop();
+  }
+
+  String valueChoose = "";
+  String? stagePlantCare = "";
+  String? stageBloom = "";
+  String? stageHarvest = "";
+  String? stageSell = "";
+  String? stagePlantSeed = "";
+  String? stageCover = "";
+  Process? process;
+  Future fetchProcess() async {
+    process = await processServices.fetchAllProcessTitle(
+        context: context, id: widget.product.processId);
+    setState(() {
+      stageBloom = process!.stageBloom!.name;
+      stagePlantCare = process!.stagePlantCare!.name;
+      stageHarvest = process!.stageHarvest!.name;
+      stageSell = process!.stageSell!.name;
+      stagePlantSeed = process!.stagePlantSeeds!.name;
+      stageCover = process!.stageCover!.name;
+    });
+
+    // print(process!.stageBloom!.name);
+  }
+
+  List<String?> nameStage() {
+    return [
+      stagePlantSeed,
+      stagePlantCare,
+      stageBloom,
+      stageCover,
+      stageHarvest,
+      stageSell
+    ];
   }
 
   void selectImages() async {
@@ -86,10 +176,11 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
                       onDateTimeChanged: (DateTime val) {
                         setState(() {
                           _chosenDateTime = val;
-                          timeinput.text = _chosenDateTime.toString();
+                          timeinput.text =
+                              "${_chosenDateTime.day.toString()}/${_chosenDateTime.month.toString()}/${_chosenDateTime.year.toString()}";
                         });
                       },
-                      mode: CupertinoDatePickerMode.dateAndTime,
+                      mode: CupertinoDatePickerMode.date,
                     ),
                   ),
 
@@ -109,7 +200,7 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Add Tracking",
+          "Thêm theo dõi",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
@@ -153,24 +244,202 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Tracking Name"),
+                                    reuseableRichText("Tên theo dõi"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
-                                reusableTextFiledName("Tracking Name",
-                                    _nameTextController, false),
-                                SizedBox(height: kDefaultPadding * 2),
+                                DropdownButtonFormField2(
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    focusColor: ColorPalette.subTitleColor,
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        gapPadding: 50),
+                                  ),
+                                  buttonStyleData: ButtonStyleData(
+                                    height: 60,
+                                    width: 160,
+                                    padding: const EdgeInsets.only(
+                                        left: 11, right: 16),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: Colors.black, width: 0.5),
+                                      color: ColorPalette.subTitleColor
+                                          .withOpacity(0.3),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  isExpanded: true,
+                                  hint: Row(
+                                    children: [
+                                      Icon(Icons.brightness_5_outlined,
+                                          color: ColorPalette.subTitleColor),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      const Text(
+                                        'Chọn quy trình',
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ],
+                                  ),
+                                  items: nameStage()
+                                      .map((item) => DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                    Icons.brightness_5_outlined,
+                                                    color: ColorPalette
+                                                        .subTitleColor),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                  item as String,
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ))
+                                      .toList(),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Please select process.';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (value) {
+                                    setState(() {
+                                      valueChoose = value.toString();
+                                      print(valueChoose);
+                                    });
+                                  },
+                                  onSaved: (value) {
+                                    valueChoose = value.toString();
+
+                                    print(valueChoose);
+                                  },
+                                  iconStyleData: const IconStyleData(
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.black45,
+                                    ),
+                                    iconSize: 30,
+                                  ),
+                                  dropdownStyleData: DropdownStyleData(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: kDefaultPadding / 2),
+                                Container(
+                                    child: valueChoose == nameStage()[1]
+                                        ? Column(children: [
+                                            SizedBox(
+                                                height: kDefaultPadding / 2),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                reuseableRichText(
+                                                    "Thời gian tưới nước"),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                                height: kDefaultPadding / 2),
+                                            reusableTextFiledName(
+                                                "Thời gian tưới nước",
+                                                _waterTextController,
+                                                false),
+                                            SizedBox(
+                                                height: kDefaultPadding / 2),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                reuseableRichText("Phân bón"),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                                height: kDefaultPadding / 2),
+                                            reusableTextFiledName(
+                                                "Phân bón",
+                                                _fertilizierTextController,
+                                                false),
+                                            SizedBox(
+                                                height: kDefaultPadding / 2),
+                                          ])
+                                        : valueChoose == nameStage()[4]
+                                            ? Column(children: [
+                                                SizedBox(
+                                                    height:
+                                                        kDefaultPadding / 2),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    reuseableRichText(
+                                                        "Số lượng"),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                    height:
+                                                        kDefaultPadding / 2),
+                                                reusableTextFiledName(
+                                                    "Số lượng",
+                                                    _quantityTextController,
+                                                    false),
+                                                SizedBox(
+                                                    height:
+                                                        kDefaultPadding / 2),
+                                              ])
+                                            : valueChoose == nameStage()[5]
+                                                ? Column(children: [
+                                                    SizedBox(
+                                                        height:
+                                                            kDefaultPadding /
+                                                                2),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        reuseableRichText(
+                                                            "Đơn vị mua hàng"),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                        height:
+                                                            kDefaultPadding /
+                                                                2),
+                                                    reusableTextFiledName(
+                                                        "Đơn vị mua hàng",
+                                                        _purchasingunitTextController,
+                                                        false),
+                                                    SizedBox(
+                                                        height:
+                                                            kDefaultPadding /
+                                                                2),
+                                                  ])
+                                                : null),
+                                SizedBox(height: kDefaultPadding / 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Time"),
+                                    reuseableRichText("Thời gian"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 TextFormField(
                                     controller: timeinput,
                                     decoration: InputDecoration(
-                                        labelText: "Time",
+                                        labelText: "Thời gian",
                                         labelStyle: TextStyle(
                                             color: ColorPalette.subTitleColor
                                                 .withOpacity(0.9)),
@@ -194,7 +463,7 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Image"),
+                                    reuseableRichText("Hình ảnh"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
@@ -241,7 +510,7 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
                                                 ),
                                                 const SizedBox(height: 15),
                                                 Text(
-                                                  'Select Product Images',
+                                                  'Chọn hình ảnh sản phẩm',
                                                   style: TextStyle(
                                                     fontSize: 15,
                                                     color: Colors.grey.shade400,
@@ -256,17 +525,22 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Description"),
+                                    reuseableRichText("Mô tả"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
-                                reusableTextFiledName("Description",
-                                    _descriptionTextController, true),
+                                reusableTextFiledName(
+                                    "Mô tả", _descriptionTextController, true),
                                 SizedBox(height: kDefaultPadding * 2),
-                                ButtonWidget(
-                                  title: "Update",
-                                  onTap: addTracking,
-                                )
+                                valueChoose == nameStage()[5]
+                                    ? ButtonWidget(
+                                        title: "Vận chuyển",
+                                        onTap: addTrackingDeliveried,
+                                      )
+                                    : ButtonWidget(
+                                        title: "Cập nhật",
+                                        onTap: addTracking,
+                                      )
                               ],
                             ),
                           )),

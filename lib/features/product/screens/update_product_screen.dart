@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,8 +21,13 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../core/constants/utils.dart';
 import '../../../models/product.dart';
+import '../../../models/tracking.dart';
 import '../../../models/user.dart';
+import '../../../models/process.dart';
 import '../../../providers/user_providers.dart';
+import '../../../utils/utils.dart';
+import '../../newfeed/services/process_services.dart';
+import '../../widgets/loader.dart';
 import '../services/product_serviecs.dart';
 
 class UpdateProductScreen extends StatefulWidget {
@@ -34,23 +40,52 @@ class UpdateProductScreen extends StatefulWidget {
 }
 
 class _UpdateProductScreenState extends State<UpdateProductScreen> {
+  _UpdateProductScreenState() {
+    valueChoose = "Process";
+  }
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _addressTextController = TextEditingController();
   TextEditingController _descriptionTextController = TextEditingController();
   TextEditingController timeinput = TextEditingController();
   final ProductServices productServices = ProductServices();
+  final ProcessServices processServices = ProcessServices();
   String id = '';
+  String processProductID = "";
   List<String> images = [];
-  @override
+  List<String> certificate = [];
+  int? productNumber = 0;
+  Future fetchDetailProduct() async {
+    productNumber = await productServices.fetchDetailProductsBC(
+        context: context, id: widget.product.productId);
+    setState(() {});
+  }
+
+  List<Tracking> tracking = [];
+  Future fetchTracking() async {
+    tracking = await productServices.fetchAllTracking(
+        context: context, id: widget.product.productId);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   void initState() {
     // TODO: implement initState
+    fetchProcess();
+    fetchProcesses();
+    fetchTracking();
+    print("Tracking");
+
     setState(() {
       _nameTextController.text = widget.product.name;
       _addressTextController.text = widget.product.address;
       _descriptionTextController.text = widget.product.description;
       timeinput.text = widget.product.time;
       images = widget.product.images;
+      certificate = widget.product.certificates;
+      valueChoose = stageProcessName as String;
       id = widget.product.id;
+      processProductID = widget.product.processId;
     });
     super.initState();
   }
@@ -66,10 +101,35 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           description: _descriptionTextController.text,
           address: _addressTextController.text,
           time: timeinput.text,
-          images: images);
+          processId: processProductID,
+          images: images,
+          certificate: certificate);
     }
   }
 
+  String valueChoose = "";
+  String? stagePlantCare = "";
+  String? stageBloom = "";
+  String? stageHarvest = "";
+  String? stageSell = "";
+  String? stagePlantSeed = "";
+  String? stageCover = "";
+  String? stageProcessName = "";
+
+  Process? process;
+  Future fetchProcess() async {
+    process = await processServices.fetchAllProcessTitle(
+        context: context, id: widget.product.processId);
+    setState(() {
+      stageBloom = process!.stageBloom!.name;
+      stagePlantCare = process!.stagePlantCare!.name;
+      stageHarvest = process!.stageHarvest!.name;
+      stageSell = process!.stageSell!.name;
+      stagePlantSeed = process!.stagePlantSeeds!.name;
+      stageCover = process!.stageCover!.name;
+      stageProcessName = process!.stageProcess!.name;
+    });
+  }
   // List<File> imagess = [];
   // void selectImages() async {
   //   var res = await pickImages();
@@ -77,6 +137,12 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   //     imagess = res;
   //   });
   // }
+
+  List<Process> processes = [];
+  Future fetchProcesses() async {
+    processes = await processServices.fetchAllProcess(context: context);
+    setState(() {});
+  }
 
   DateTime _chosenDateTime = DateTime.now();
 
@@ -97,7 +163,8 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                       onDateTimeChanged: (DateTime val) {
                         setState(() {
                           _chosenDateTime = val;
-                          timeinput.text = _chosenDateTime.toString();
+                          timeinput.text =
+                              "${_chosenDateTime.day.toString()}/${_chosenDateTime.month.toString()}/${_chosenDateTime.year.toString()}";
                         });
                       },
                       mode: CupertinoDatePickerMode.dateAndTime,
@@ -131,7 +198,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Update Product",
+          "Cập nhật sản phẩm",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
@@ -175,34 +242,215 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Product Name"),
+                                    reuseableRichText("Tên sản phẩm:"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName(
-                                    "Product Name", _nameTextController, false),
-                                SizedBox(height: kDefaultPadding * 2),
+                                    "Tên sản phẩm", _nameTextController, false),
+                                SizedBox(height: kDefaultPadding / 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Address"),
+                                    reuseableRichText("Địa chỉ"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 reusableTextFiledName(
-                                    "Address", _addressTextController, false),
-                                SizedBox(height: kDefaultPadding * 2),
+                                    "Địa chỉ", _addressTextController, false),
+                                SizedBox(height: kDefaultPadding / 2),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Time"),
+                                    reuseableRichText("Quá trình"),
+                                  ],
+                                ),
+                                SizedBox(height: kDefaultPadding / 2),
+                                tracking.length == 0
+                                    ? DropdownButtonFormField2(
+                                        decoration: InputDecoration(
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.zero,
+                                          focusColor:
+                                              ColorPalette.subTitleColor,
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              gapPadding: 50),
+                                        ),
+                                        buttonStyleData: ButtonStyleData(
+                                          height: 60,
+                                          width: 160,
+                                          padding: const EdgeInsets.only(
+                                              left: 11, right: 16),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5),
+                                            color: ColorPalette.subTitleColor
+                                                .withOpacity(0.3),
+                                          ),
+                                          elevation: 0,
+                                        ),
+                                        isExpanded: true,
+                                        hint: Row(
+                                          children: [
+                                            Icon(Icons.brightness_5_outlined,
+                                                color:
+                                                    ColorPalette.subTitleColor),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              stageProcessName as String,
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                          ],
+                                        ),
+                                        items: processes
+                                            .map((item) =>
+                                                DropdownMenuItem<String>(
+                                                  value: item.sId,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                          Icons
+                                                              .brightness_5_outlined,
+                                                          color: ColorPalette
+                                                              .subTitleColor),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(
+                                                        item.stageProcess!.name
+                                                            as String,
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ))
+                                            .toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            processProductID = value.toString();
+                                          });
+                                        },
+                                        onSaved: (value) {
+                                          processProductID = value.toString();
+
+                                          print(valueChoose);
+                                        },
+                                        iconStyleData: const IconStyleData(
+                                          icon: Icon(
+                                            Icons.arrow_drop_down,
+                                            color: Colors.black45,
+                                          ),
+                                          iconSize: 30,
+                                        ),
+                                        dropdownStyleData: DropdownStyleData(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                        ),
+                                      )
+                                    : DropdownButtonFormField2(
+                                        decoration: InputDecoration(
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.zero,
+                                          focusColor:
+                                              ColorPalette.subTitleColor,
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              gapPadding: 50),
+                                        ),
+                                        buttonStyleData: ButtonStyleData(
+                                          height: 60,
+                                          width: 160,
+                                          padding: const EdgeInsets.only(
+                                              left: 11, right: 16),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5),
+                                            color: ColorPalette.subTitleColor
+                                                .withOpacity(0.3),
+                                          ),
+                                          elevation: 0,
+                                        ),
+                                        isExpanded: true,
+                                        hint: Row(
+                                          children: [
+                                            Icon(Icons.brightness_5_outlined,
+                                                color:
+                                                    ColorPalette.subTitleColor),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              stageProcessName as String,
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                          ],
+                                        ),
+                                        items: processes
+                                            .map((item) =>
+                                                DropdownMenuItem<String>(
+                                                  value: item.sId,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                          Icons
+                                                              .brightness_5_outlined,
+                                                          color: ColorPalette
+                                                              .subTitleColor),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(
+                                                        item.stageProcess!.name
+                                                            as String,
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ))
+                                            .toList(),
+                                        iconStyleData: const IconStyleData(
+                                          icon: Icon(
+                                            Icons.arrow_drop_down,
+                                            color: Colors.black45,
+                                          ),
+                                          iconSize: 30,
+                                        ),
+                                        dropdownStyleData: DropdownStyleData(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                        ),
+                                      ),
+                                SizedBox(height: kDefaultPadding / 2),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    reuseableRichText("Thời gian "),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
                                 TextFormField(
                                     controller: timeinput,
                                     decoration: InputDecoration(
-                                        labelText: "Time",
+                                        labelText: "Thời gian",
                                         labelStyle: TextStyle(
                                             color: ColorPalette.subTitleColor
                                                 .withOpacity(0.9)),
@@ -226,7 +474,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Image"),
+                                    reuseableRichText("Hình ảnh"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
@@ -273,7 +521,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                                 ),
                                                 const SizedBox(height: 15),
                                                 Text(
-                                                  'Select Product Images',
+                                                  'Chọn hình ảnh sản phẩm',
                                                   style: TextStyle(
                                                     fontSize: 15,
                                                     color: Colors.grey.shade400,
@@ -288,15 +536,15 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Description"),
+                                    reuseableRichText("Mô tả"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
-                                reusableTextFiledName("Description",
-                                    _descriptionTextController, true),
+                                reusableTextFiledName(
+                                    "Mô tả", _descriptionTextController, true),
                                 SizedBox(height: kDefaultPadding * 2),
                                 ButtonWidget(
-                                    title: "Update", onTap: updateProduct
+                                    title: "Cập nhật", onTap: updateProduct
                                     // addProduct,
                                     )
                               ],

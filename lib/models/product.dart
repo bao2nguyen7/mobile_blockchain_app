@@ -11,8 +11,11 @@ class Product {
   final String address;
   final String time;
   final String url;
+  final String productId;
   final String description;
+  final String processId;
   final List<String> images;
+  final List<String> certificates;
   final List<String> tracking;
   Product({
     required this.id,
@@ -20,8 +23,11 @@ class Product {
     required this.address,
     required this.time,
     required this.url,
+    required this.productId,
     required this.description,
+    required this.processId,
     required this.images,
+    required this.certificates,
     required this.tracking,
   });
 
@@ -31,8 +37,11 @@ class Product {
       'name': name,
       'address': address,
       'time': time,
+      'processId': processId,
+      'productId': productId,
       'description': description,
       'images': images,
+      'certificates': certificates,
       'url': url,
       'tracking': tracking
     };
@@ -44,9 +53,14 @@ class Product {
     final address = map['address'] as String;
     final time = map['time'] as String;
     final url = map['url'] as String;
+    final productId = map['productId'] as String;
+    final processId = map['processId'] as String;
     final description = map['description'] as String;
     final images = List<String>.from(
       (map['images'] as List<dynamic>),
+    );
+    final certificates = List<String>.from(
+      (map['certificates'] as List<dynamic>),
     );
     final tracking = List<String>.from(
       (map['tracking'] as List<dynamic>),
@@ -63,8 +77,11 @@ class Product {
         address: address,
         time: time,
         url: url,
+        productId: productId,
+        processId: processId,
         description: description,
         images: images,
+        certificates: certificates,
         tracking: tracking);
   }
 
@@ -79,8 +96,10 @@ class Product {
     String? address,
     String? time,
     String? url,
+    String? processId,
     String? description,
     List<String>? images,
+    List<String>? certificate,
     List<String>? tracking,
   }) {
     return Product(
@@ -88,8 +107,11 @@ class Product {
       name: name ?? this.name,
       address: address ?? this.address,
       time: time ?? this.time,
+      productId: productId ?? this.productId,
       description: description ?? this.description,
       images: images ?? this.images,
+      certificates: certificate ?? this.certificates,
+      processId: processId ?? this.processId,
       url: url ?? this.url,
       tracking: tracking ?? this.tracking,
     );

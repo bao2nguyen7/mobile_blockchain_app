@@ -25,12 +25,9 @@ class ProcessServices {
         onSuccess: () {
           final json = jsonDecode(res.body);
           final result = json["data"];
-          // print(result);
           // print(json["data"]["products"]);
           for (int i = 0; i < result.length; i++) {
             processList.add(Process.fromJson(result[i]));
-            // print(result[i]["stageProcess"]["name"]);
-            print(processList);
           }
         },
       );
@@ -40,13 +37,48 @@ class ProcessServices {
     return processList;
   }
 
-  Future<List<String>> fetchAllProcessTitle(
-      {required BuildContext context}) async {
+  Future<Process> fetchAllProcessTitle(
+      {required BuildContext context, required String id}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    List<String> processList = [];
+    Process processAll = Process(
+      stageProcess: StageProcess(
+        name: '',
+        description: '',
+        images: [],
+        timeCreate: '',
+      ),
+      // stagePlantSeeds: StagePlantSeeds(
+      //   name: '',
+      //   description: '',
+      // ),
+      stagePlantCare: StagePlantCare(
+        name: '',
+        description: '',
+        water: '',
+        fertilizer: '',
+      ),
+      stageBloom: StageBloom(
+        name: '',
+        description: '',
+      ),
+      stageCover: StageCover(
+        name: '',
+        description: '',
+      ),
+      stageHarvest: StageHarvest(
+        name: '',
+        description: '',
+        quantity: '',
+      ),
+      stageSell: StageSell(
+        name: '',
+        description: '',
+        purchasingUnit: '',
+      ),
+    );
     try {
       http.Response res = await http
-          .get(Uri.parse('${Constants.uri}/process/get-processes'), headers: {
+          .get(Uri.parse('${Constants.uri}/process/get-process/$id'), headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         // 'x-auth-token': userProvider.user.token,
       });
@@ -59,16 +91,12 @@ class ProcessServices {
           final result = json["data"];
           // print(result);
           // print(json["data"]["products"]);
-          for (int i = 0; i < result.length; i++) {
-            processList.add(result[i]["stageProcess"]["name"]);
-            print(result[i]["stageProcess"]["name"]);
-            print(processList);
-          }
+          processAll = Process.fromJson(result);
         },
       );
     } catch (e) {
       showSnackBar(context, e.toString());
     }
-    return processList;
+    return processAll;
   }
 }

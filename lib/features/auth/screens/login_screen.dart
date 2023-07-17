@@ -86,22 +86,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: kDefaultPadding),
                       Text(
-                        'Sign In',
+                        'Đăng nhập',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: kDefaultPadding * 3),
-                      reusableTextFiled("Enter Email", FontAwesomeIcons.user,
+                      reusableTextFiled("Nhập email", FontAwesomeIcons.user,
                           false, _emailTextController),
                       SizedBox(height: kDefaultPadding * 2),
-                      reusableTextFiled("Enter password", FontAwesomeIcons.lock,
+                      reusableTextFiled("Nhập password", FontAwesomeIcons.lock,
                           true, _passwordTextController),
                       SizedBox(height: kDefaultPadding * 3),
-                      ButtonWidget(title: "Sign In", onTap: LogInUser),
+                      ButtonWidget(title: "Đăng nhập", onTap: LogInUser),
                       SizedBox(height: kDefaultPadding * 3),
                       RichText(
                         text: TextSpan(
-                            text: "New user?",
+                            text: "Bạn là người dùng mới?",
                             style: TextStyle(
                                 color: ColorPalette.text1Color, fontSize: 16),
                             children: <TextSpan>[
@@ -111,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Navigator.of(context)
                                           .pushNamed(RegisterScreen.routeName);
                                     },
-                                  text: " Sign up for a new account",
+                                  text: " Đăng ký",
                                   style: TextStyle(
                                       color: ColorPalette.blueColor,
                                       fontSize: 16,

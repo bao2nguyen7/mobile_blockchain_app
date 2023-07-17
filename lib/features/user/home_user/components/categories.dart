@@ -8,31 +8,32 @@ import '../../../newfeed/screens/newfeed.dart';
 import '../../../newfeed/screens/newfeed_detail.dart';
 import '../../../product/screens/add_product_screen.dart';
 import '../../../product/screens/product_screen.dart';
+import '../../../product/screens/product_user_screen.dart';
 
 class Categories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(15),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CategoryCard(
                 icon: AssetsHelper.createProduct,
-                text: "Create product",
+                text: "Tạo sản phẩm",
                 press: () {
                   showSnackBar(context, 'Error');
                 }),
             CategoryCard(
                 icon: AssetsHelper.product,
-                text: "Product",
+                text: "Sản phẩm",
                 press: () {
-                  Navigator.of(context).pushNamed(ProductScreen.routeName);
+                  Navigator.of(context).pushNamed(ProductUserScreen.routeName);
                 }),
             CategoryCard(
                 icon: AssetsHelper.newFeed,
-                text: "New feed",
+                text: "Bảng tin",
                 press: () {
                   Navigator.of(context).pushNamed(NewFeedScreen.routeName);
                 }),

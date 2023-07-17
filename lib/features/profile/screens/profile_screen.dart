@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/features/profile/components/body.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/color_constants.dart';
+import '../../../providers/user_providers.dart';
 import '../../home/screens/main_app_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -15,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
         centerTitle: true,
         titleSpacing: 20,
         title: Text(
-          "Profile",
+          "Thông tin ",
           style: TextStyle(
             fontWeight: FontWeight.w300,
             fontSize: 25,

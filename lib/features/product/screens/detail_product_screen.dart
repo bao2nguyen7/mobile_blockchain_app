@@ -8,6 +8,7 @@ import 'package:mobile_app_blockchain/core/helpers/assets_helper.dart';
 import 'package:mobile_app_blockchain/core/helpers/image_helper.dart';
 import 'package:mobile_app_blockchain/features/product/screens/add_tracking_screen.dart';
 import 'package:mobile_app_blockchain/features/product/screens/description_detail.dart';
+import 'package:mobile_app_blockchain/features/product/screens/qrcode_page.dart';
 import 'package:mobile_app_blockchain/features/product/screens/tracking_detail.dart';
 import 'package:mobile_app_blockchain/features/product/widgets/customListitle.dart';
 import 'package:mobile_app_blockchain/features/widgets/button_widgets.dart';
@@ -20,6 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/dismenssion_constants.dart';
+import '../../../models/process.dart';
 import '../../../models/product.dart';
 import '../../../providers/user_providers.dart';
 import '../../newfeed/services/process_services.dart';
@@ -42,6 +44,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
   final ProcessServices processServices = ProcessServices();
   int selectedImage = 0;
   bool isSeeAll = false;
+  bool shouldReload = false;
   void isSeeAllCheck() {
     setState(() {
       isSeeAll = true;
@@ -51,22 +54,63 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
   bool isLoading = true;
   List<Tracking> tracking = [];
   Future fetchTracking() async {
-    // tracking = await
     tracking = await productServices.fetchAllTracking(
-        context: context, id: widget.product.id);
-    setState(() {
-      results = tracking;
-    });
+        context: context, id: widget.product.productId);
+    if (mounted) {
+      setState(() {
+        results = tracking;
+        if (tracking.length > 0) {
+          fetchDetailProduct();
+        }
+      });
+    }
   }
 
-  // Product? product;
-  // Future fetchProduct() async {
-  //   // tracking = await
-  //   product = await productServices.fetchDetailProducts(
-  //       context: context, id: widget.product.id);
-  //   setState(() {});
-  //   // print(product);
-  // }
+  int? productNumber = 0;
+  Future fetchDetailProduct() async {
+    productNumber = await productServices.fetchDetailProductsBC(
+        context: context, id: widget.product.productId);
+    if (mounted) {
+      setState(() {
+        // Cập nhật trạng thái của widget chỉ khi widget vẫn còn mounted
+      });
+    }
+  }
+
+  String? stagePlantCare = "";
+  String? stageBloom = "";
+  String? stageHarvest = "";
+  String? stageSell = "";
+  String? stagePlantSeed = "";
+  String? stageCover = "";
+  Process? process;
+  Future fetchProcess() async {
+    process = await processServices.fetchAllProcessTitle(
+        context: context, id: widget.product.processId);
+    if (mounted) {
+      setState(() {
+        stageBloom = process!.stageBloom!.name;
+        stagePlantCare = process!.stagePlantCare!.name;
+        stageHarvest = process!.stageHarvest!.name;
+        stageSell = process!.stageSell!.name;
+        stagePlantSeed = process!.stagePlantSeeds!.name;
+        stageCover = process!.stageCover!.name;
+      });
+    }
+
+    // print(process!.stageBloom!.name);
+  }
+
+  List<String?> nameStage() {
+    return [
+      stagePlantSeed,
+      stagePlantCare,
+      stageBloom,
+      stageCover,
+      stageHarvest,
+      stageSell
+    ];
+  }
 
   List<Tracking> results = [];
   void runFilter(String enteredKeyword) {
@@ -89,9 +133,13 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
     // TODO: implement initState
     super.initState();
     fetchTracking();
+    fetchDetailProduct();
+    fetchProcess();
+    print(process);
+    setState(() {
+      shouldReload = true;
+    });
     // fetchProduct();
-    print(widget.product.url);
-    print(widget.product.id);
 
     // foundtracking = tracking;
   }
@@ -116,6 +164,9 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
     var size = MediaQuery.of(context).size;
+    // if (shouldReload) {
+    //   fetchTracking();
+    // }
     return Scaffold(
       backgroundColor: Colors.white,
       body: Visibility(
@@ -222,11 +273,24 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                     ),
                                   ),
                                   SizedBox(height: 5),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.add_location),
-                                      Text(widget.product.address)
-                                    ],
+                                  Container(
+                                    width: 290,
+                                    height: 60,
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.add_location),
+                                        Container(
+                                          width: 250,
+                                          child: Text(
+                                            widget.product.address,
+                                            textAlign: TextAlign.left,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -237,12 +301,22 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   decoration: BoxDecoration(
                                       color: ColorPalette.primaryColor,
                                       borderRadius: BorderRadius.all(
-                                        Radius.circular(20),
+                                        Radius.circular(10),
                                       )),
-                                  child: QrImage(
-                                    data: widget.product.id,
-                                    version: QrVersions.auto,
-                                    size: 70.0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => QRCodePage(
+                                                    id: widget.product.id,
+                                                  )));
+                                    },
+                                    child: QrImageView(
+                                      data: widget.product.productId,
+                                      version: QrVersions.auto,
+                                      size: 70.0,
+                                    ),
                                   ),
                                 ),
                               )
@@ -282,7 +356,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   text: TextSpan(
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = _launchURL,
-                                      text: "Check now",
+                                      text: "Kiểm tra",
                                       style: TextStyle(
                                           color: ColorPalette.primaryColor,
                                           fontSize: 16,
@@ -304,7 +378,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Description ",
+                                "Mô tả sản phẩm ",
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               GestureDetector(
@@ -314,12 +388,11 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               DetailDescription(
-                                                description:
-                                                    widget.product.description,
+                                                product: widget.product,
                                               )));
                                 },
                                 child: Text(
-                                  "See All",
+                                  "Xem thêm",
                                   style: TextStyle(
                                       fontSize: 15,
                                       decorationColor: Colors.amber),
@@ -344,24 +417,24 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   borderRadius: BorderRadius.circular(10)),
                             ),
                           ),
-                          SizedBox(height: 12),
+                          SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Tracking : ${tracking.length}",
+                                "Nhật ký : ${tracking.length}",
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
-                              user.userType == "Farmer"
+                              user.userType == "Farmer" && productNumber != 3
                                   ? ButtonWidget(
-                                      title: "Add tracking",
+                                      title: "Thêm",
                                       onTap: () => {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     AddTrackingScreen(
-                                                      id: widget.product.id,
+                                                      product: widget.product,
                                                     )))
                                       },
                                     )
@@ -383,14 +456,14 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 15, horizontal: 15),
-                                hintText: "Track title",
+                                hintText: "Tên theo dõi",
                                 suffixIcon: Icon(Icons.search),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
                                   borderSide: const BorderSide(),
                                 )),
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: 5),
                           Expanded(
                             flex: 8,
                             child: Container(
@@ -403,15 +476,17 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                 padding: const EdgeInsets.all(10),
                                 child: Column(
                                   children: [
-                                    tracking!.isEmpty
-                                        ? GestureDetector(
-                                            child: Text("Tracking is empty"))
+                                    tracking!.isEmpty && process == null
+                                        ? Text("Trống")
                                         : Expanded(
                                             child: ListView.builder(
                                               itemCount: results!.length,
                                               itemBuilder: (context, index) =>
                                                   customListTile(
-                                                      results![index], context),
+                                                      results![index],
+                                                      widget.product,
+                                                      process,
+                                                      context),
                                             ),
                                           ),
                                   ],

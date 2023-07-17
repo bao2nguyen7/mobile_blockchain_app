@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_blockchain/features/newfeed/services/process_services.dart';
 import 'package:mobile_app_blockchain/features/newfeed/widget/customListitle.dart';
 import 'package:mobile_app_blockchain/utils/constans.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/dismenssion_constants.dart';
 import '../../../models/process.dart';
+import '../../../providers/user_providers.dart';
 import '../../home/screens/main_app_screen.dart';
+import '../../user/home_user/screens/main_app_screen.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/single_product.dart';
 
@@ -28,23 +31,40 @@ class _NewFeedScreenState extends State<NewFeedScreen> {
   List<Process>? process;
   Future fetchProcess() async {
     process = await processServices.fetchAllProcess(context: context);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
     // print(product);
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         titleSpacing: 20,
         title: Text(
-          "New Feed",
+          "Bảng tin",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),
         ),
         elevation: 0,
         backgroundColor: ColorPalette.primaryColor,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                user.userType != "User"
+                    ? Navigator.of(context).pushNamed(MainAppScreen.routeName)
+                    : Navigator.of(context)
+                        .pushNamed(MainAppUserScreen.routeName);
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
       ),
       backgroundColor: ColorPalette.primaryColor,
       body: Container(

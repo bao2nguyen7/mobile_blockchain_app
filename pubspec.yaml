@@ -62,6 +62,11 @@ dependencies:
   webview_flutter: ^4.2.2
   another_flushbar: ^1.12.30
   url_launcher: ^6.1.11
+  file: ^6.1.4
+  casa_vertical_stepper: ^0.0.5
+  another_stepper: ^1.2.2
+  easy_stepper: ^0.7.2
+  rounded_loading_button: ^2.1.0
  
 
 dev_dependencies:
