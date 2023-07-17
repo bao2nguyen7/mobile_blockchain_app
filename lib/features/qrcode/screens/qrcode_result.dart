@@ -68,7 +68,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
     print(product);
     if (mounted) {
       setState(() {
-        processID = product!.processId;
+        processID = product?.processId ?? '';
         fetchProcess();
       });
     }
@@ -117,12 +117,12 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
         context: context, id: processID);
     if (mounted) {
       setState(() {
-        stageBloom = process!.stageBloom!.name;
-        stagePlantCare = process!.stagePlantCare!.name;
-        stageHarvest = process!.stageHarvest!.name;
-        stageSell = process!.stageSell!.name;
-        stagePlantSeed = process!.stagePlantSeeds!.name;
-        stageCover = process!.stageCover!.name;
+        stageBloom = process?.stageBloom?.name ?? '';
+        stagePlantCare = process?.stagePlantCare?.name ?? '';
+        stageHarvest = process?.stageHarvest?.name ?? '';
+        stageSell = process?.stageSell?.name ?? '';
+        stagePlantSeed = process?.stagePlantSeeds?.name ?? '';
+        stageCover = process?.stageCover?.name ?? '';
       });
     }
     // print(process!.stageBloom!.name);

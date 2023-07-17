@@ -121,13 +121,13 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     process = await processServices.fetchAllProcessTitle(
         context: context, id: widget.product.processId);
     setState(() {
-      stageBloom = process!.stageBloom!.name;
-      stagePlantCare = process!.stagePlantCare!.name;
-      stageHarvest = process!.stageHarvest!.name;
-      stageSell = process!.stageSell!.name;
-      stagePlantSeed = process!.stagePlantSeeds!.name;
-      stageCover = process!.stageCover!.name;
-      stageProcessName = process!.stageProcess!.name;
+      stageBloom = process?.stageBloom?.name ?? '';
+      stagePlantCare = process?.stagePlantCare?.name ?? '';
+      stageHarvest = process?.stageHarvest?.name ?? '';
+      stageSell = process?.stageSell?.name ?? '';
+      stagePlantSeed = process?.stagePlantSeeds?.name ?? '';
+      stageCover = process?.stageCover?.name ?? '';
+      stageProcessName = process?.stageProcess?.name ?? '';
     });
   }
   // List<File> imagess = [];

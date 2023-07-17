@@ -128,12 +128,12 @@ class _AddTrackingScreenState extends State<AddTrackingScreen> {
     process = await processServices.fetchAllProcessTitle(
         context: context, id: widget.product.processId);
     setState(() {
-      stageBloom = process!.stageBloom!.name;
-      stagePlantCare = process!.stagePlantCare!.name;
-      stageHarvest = process!.stageHarvest!.name;
-      stageSell = process!.stageSell!.name;
-      stagePlantSeed = process!.stagePlantSeeds!.name;
-      stageCover = process!.stageCover!.name;
+      stageBloom = process?.stageBloom?.name ?? '';
+      stagePlantCare = process?.stagePlantCare?.name ?? '';
+      stageHarvest = process?.stageHarvest?.name ?? '';
+      stageSell = process?.stageSell?.name ?? '';
+      stagePlantSeed = process?.stagePlantSeeds?.name ?? '';
+      stageCover = process?.stageCover?.name ?? '';
     });
 
     // print(process!.stageBloom!.name);
