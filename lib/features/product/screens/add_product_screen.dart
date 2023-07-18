@@ -423,7 +423,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Hình ảnh chứng chỉ"),
+                                    reuseableRichTextNo("Hình ảnh chứng chỉ"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
