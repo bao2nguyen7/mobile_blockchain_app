@@ -81,14 +81,14 @@ class AuthService {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           userProvider.setUser(res.body);
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
-          if (jsonDecode(res.body)['userType'] == "Farmer") {
+          if (jsonDecode(res.body)['userType'] == "Nông dân") {
             navigator.pushAndRemoveUntil(
               MaterialPageRoute(
                 builder: (context) => const MainAppScreen(),
               ),
               (route) => false,
             );
-          } else if (jsonDecode(res.body)['userType'] == "User") {
+          } else if (jsonDecode(res.body)['userType'] == "Người dùng") {
             navigator.pushAndRemoveUntil(
               MaterialPageRoute(
                 builder: (context) => const MainAppUserScreen(),

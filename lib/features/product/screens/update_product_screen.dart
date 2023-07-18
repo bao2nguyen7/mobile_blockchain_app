@@ -115,6 +115,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           productId: productId,
           certificate: certificate);
     }
+    Navigator.of(context).pop();
   }
 
   String valueChoose = "";

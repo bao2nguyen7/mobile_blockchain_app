@@ -38,7 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   String valueChoose = "";
-  List listitems = ["User", "Farmer"];
+  List listitems = ["Người dùng", "Nông dân"];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

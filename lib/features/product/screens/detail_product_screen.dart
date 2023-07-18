@@ -425,7 +425,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                 "Nhật ký : ${tracking.length}",
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
-                              user.userType == "Farmer" && productNumber != 3
+                              user.userType == "Nông dân" && productNumber != 3
                                   ? ButtonWidget(
                                       title: "Thêm",
                                       onTap: () => {

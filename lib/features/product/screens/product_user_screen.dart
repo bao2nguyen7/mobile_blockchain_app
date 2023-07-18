@@ -84,7 +84,7 @@ class _ProductUserScreenState extends State<ProductUserScreen> {
             return IconButton(
               icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                user.userType != "User"
+                user.userType != "Người dùng"
                     ? Navigator.of(context).pushNamed(MainAppScreen.routeName)
                     : Navigator.of(context)
                         .pushNamed(MainAppUserScreen.routeName);
