@@ -287,7 +287,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                               SizedBox(height: 5),
                                               Container(
                                                 width: 290,
-                                                height: 60,
+                                                height: 80,
                                                 child: Column(
                                                   children: [
                                                     Row(
@@ -334,6 +334,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                               ),
                                             ],
                                           ),
+                                          SizedBox(height: 10),
                                           Align(
                                             alignment: Alignment.centerRight,
                                             child: Container(
@@ -366,7 +367,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                           )
                                         ],
                                       ),
-                                      SizedBox(height: 12),
+                                      SizedBox(height: 10),
                                       Align(
                                         child: Container(
                                           width: 500,
@@ -378,7 +379,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                   BorderRadius.circular(10)),
                                         ),
                                       ),
-                                      SizedBox(height: 20),
+                                      SizedBox(height: 10),
                                       Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -413,7 +414,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                         fontWeight:
                                                             FontWeight.w800))),
                                           ]),
-                                      SizedBox(height: 20),
+                                      SizedBox(height: 10),
                                       Align(
                                         child: Container(
                                           width: 500,

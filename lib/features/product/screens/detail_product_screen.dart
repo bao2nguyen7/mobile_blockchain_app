@@ -270,7 +270,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                 children: [
                                   Container(
                                     width: 250,
-                                    height: 80,
+                                    height: 100,
                                     child: FittedBox(
                                       fit: BoxFit.scaleDown,
                                       alignment: Alignment.centerLeft,
@@ -286,7 +286,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   SizedBox(height: 5),
                                   Container(
                                     width: 290,
-                                    height: 60,
+                                    height: 80,
                                     child: Column(
                                       children: [
                                         Row(
@@ -327,6 +327,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   ),
                                 ],
                               ),
+                              SizedBox(height: 10),
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Container(
@@ -355,7 +356,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                               )
                             ],
                           ),
-                          SizedBox(height: 12),
+                          SizedBox(height: 10),
                           Align(
                             child: Container(
                               width: 500,
@@ -365,7 +366,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   borderRadius: BorderRadius.circular(10)),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -398,7 +399,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                           fontWeight: FontWeight.w800))),
                             ],
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           Align(
                             child: Container(
                               width: 500,
