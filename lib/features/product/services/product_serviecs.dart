@@ -34,14 +34,12 @@ class ProductServices {
         CloudinaryResponse res = await cloudinary.uploadFile(
           CloudinaryFile.fromFile(images[i].path, folder: name),
         );
-        print(res);
         imageUrls.add(res.secureUrl);
       }
       for (int i = 0; i < certificates.length; i++) {
         CloudinaryResponse respone = await cloudinary.uploadFile(
           CloudinaryFile.fromFile(certificates[i].path, folder: name),
         );
-        print(respone);
         certificateUrls.add(respone.secureUrl);
       }
 
@@ -56,6 +54,7 @@ class ProductServices {
           certificates: certificateUrls,
           processId: processId,
           url: '',
+          userId: '',
           tracking: []);
       http.Response res =
           await http.post(Uri.parse('${Constants.uri}/product/add-product'),
@@ -90,18 +89,27 @@ class ProductServices {
       required String processId,
       required String description,
       required String productId,
-      required List<String> images,
-      required List<String> certificate}) async {
+      required String userId,
+      required List<String> tracking,
+      required List<File> images,
+      required List<File> certificates}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
-      // final cloudinary = CloudinaryPublic('ds6usv4r6', 'iwveqhbf');
-      // List<String> imageUrls = [];
-      // for (int i = 0; i < images.length; i++) {
-      //   CloudinaryResponse res = await cloudinary.uploadFile(
-      //     CloudinaryFile.fromFile(images[i].path, folder: name),
-      //   );
-      //   imageUrls.add(res.secureUrl);
-      // }
+      final cloudinary = CloudinaryPublic('ds6usv4r6', 'iwveqhbf');
+      List<String> imageUrls = [];
+      List<String> certificateUrls = [];
+      for (int i = 0; i < images.length; i++) {
+        CloudinaryResponse res = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(images[i].path, folder: name),
+        );
+        imageUrls.add(res.secureUrl);
+      }
+      for (int i = 0; i < certificates.length; i++) {
+        CloudinaryResponse respone = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(certificates[i].path, folder: name),
+        );
+        certificateUrls.add(respone.secureUrl);
+      }
       Product product = Product(
           id: '',
           name: name,
@@ -111,9 +119,10 @@ class ProductServices {
           description: description,
           processId: processId,
           url: '',
-          images: images,
-          certificates: certificate,
-          tracking: []);
+          userId: userId,
+          images: imageUrls,
+          certificates: certificateUrls,
+          tracking: tracking);
       http.Response res = await http.put(
           Uri.parse('${Constants.uri}/product/update-product/$productId'),
           headers: {
@@ -411,6 +420,7 @@ class ProductServices {
         description: '',
         processId: '',
         url: '',
+        userId: '',
         images: [],
         certificates: [],
         tracking: []);
@@ -492,5 +502,37 @@ class ProductServices {
     }
     // return trackingList;
     return trackingList;
+  }
+
+  Future<String> fetchNameUser(
+      {required BuildContext context, required String userId}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    String nameUser = "";
+    try {
+      http.Response res =
+          await http.get(Uri.parse('${Constants.uri}/'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'x-auth-token': userProvider.user.token,
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          final json = jsonDecode(res.body);
+          final result = json["data"];
+          for (int i = 0; i < result.length; i++) {
+            if (result[i]["_id"] == userId) {
+              nameUser = result[i]["name"];
+            }
+          }
+          print(nameUser);
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    // return trackingList;
+    return nameUser;
   }
 }

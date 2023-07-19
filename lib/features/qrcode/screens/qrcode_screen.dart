@@ -4,6 +4,8 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
 import 'package:mobile_app_blockchain/features/qrcode/screens/qrcode_result.dart';
 
+import '../../auth/screens/register_screen.dart';
+import '../../home/screens/home_screen.dart';
 import '../../home/screens/main_app_screen.dart';
 import '../../product/screens/detail_product_screen.dart';
 
@@ -24,6 +26,9 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
       setState(() {
         scanResult = scan;
       });
+      if (scanResult == "-1") {
+        Navigator.of(context).pop();
+      }
       // Navigator.of(context).pushNamed(QRCodeResultScreen.routeName);
     } on PlatformException {
       scan = "Fail";

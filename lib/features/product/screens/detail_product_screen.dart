@@ -128,6 +128,17 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
     } // Refresh the UI
   }
 
+  String nameUser = "";
+  Future fetchName() async {
+    nameUser = await productServices.fetchNameUser(
+        context: context, userId: widget.product.userId);
+    if (mounted) {
+      setState(() {
+        // Cập nhật trạng thái của widget chỉ khi widget vẫn còn mounted
+      });
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -135,7 +146,7 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
     fetchTracking();
     fetchDetailProduct();
     fetchProcess();
-    print(process);
+    fetchName();
     setState(() {
       shouldReload = true;
     });
@@ -275,19 +286,41 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                   SizedBox(height: 5),
                                   Container(
                                     width: 290,
-                                    height: 30,
-                                    child: Row(
+                                    height: 60,
+                                    child: Column(
                                       children: [
-                                        Icon(Icons.add_location),
-                                        Container(
-                                          width: 250,
-                                          child: Text(
-                                            widget.product.address,
-                                            textAlign: TextAlign.left,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium,
-                                          ),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.add_location),
+                                            Container(
+                                              width: 250,
+                                              child: Text(
+                                                widget.product.address,
+                                                textAlign: TextAlign.left,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 8,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.calendar_today_outlined),
+                                            Container(
+                                              width: 250,
+                                              child: Text(
+                                                widget.product.time,
+                                                textAlign: TextAlign.left,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -346,7 +379,9 @@ class _DeatilProductScreenState extends State<DeatilProductScreen> {
                                     width: 10,
                                   ),
                                   Text(
-                                    user.name,
+                                    user.userType == "Nông dân"
+                                        ? user.name
+                                        : nameUser,
                                     style: TextStyle(fontSize: 18),
                                   )
                                 ],

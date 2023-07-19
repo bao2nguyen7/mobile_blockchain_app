@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:majascan/majascan.dart';
 import 'package:mobile_app_blockchain/features/home/screens/home_screen.dart';
 import 'package:mobile_app_blockchain/features/product/screens/add_product_screen.dart';
 import 'package:mobile_app_blockchain/features/newfeed/screens/newfeed.dart';
@@ -48,22 +49,58 @@ class _MainAppScreenState extends State<MainAppScreen> {
     try {
       scanResult = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', "Cancel", true, ScanMode.QR);
-      print(scanResult);
-      if (scanResult != null) {
+      if (scanResult != "-1") {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => QRCodeResultScreen(
                       id: scanResult,
                     )));
-      } else {
-        Navigator.of(context).pop();
-      }
+        print(scanResult);
+      } else {}
     } on PlatformException {
       scanResult = "Fail";
     }
     if (!mounted) return;
     setState(() => this.scanResult = scanResult);
+  }
+
+  Future _scanQR() async {
+    try {
+      String? qrResult = await MajaScan.startScan(
+          title: "QRcode scanner",
+          titleColor: Colors.amberAccent[700],
+          qRCornerColor: Colors.orange,
+          qRScannerColor: Colors.orange);
+      setState(() {
+        scanResult = qrResult ?? 'null string';
+      });
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => QRCodeResultScreen(
+                    id: scanResult!,
+                  )));
+    } on PlatformException catch (ex) {
+      if (ex.code == MajaScan.CameraAccessDenied) {
+        Navigator.of(context).pop();
+        // setState(() {
+        //   scanResult = "Camera permission was denied";
+        // });
+      } else {
+        setState(() {
+          scanResult = "Unknown Error $ex";
+        });
+      }
+    } on FormatException {
+      setState(() {
+        scanResult = "You pressed the back button before scanning anything";
+      });
+    } catch (ex) {
+      setState(() {
+        scanResult = "Unknown Error $ex";
+      });
+    }
   }
 
   @override

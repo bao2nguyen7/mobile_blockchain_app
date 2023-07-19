@@ -51,14 +51,14 @@ class _MainAppUserScreenState extends State<MainAppUserScreen> {
       scanResult = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', "Cancel", true, ScanMode.QR);
       print(scanResult);
-      if (scanResult != -1) {
+      if (scanResult != "-1") {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => QRCodeResultScreen(
                       id: scanResult,
                     )));
-      }
+      } else {}
     } on PlatformException {
       scanResult = "Fail";
     }

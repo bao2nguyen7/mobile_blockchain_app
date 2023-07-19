@@ -48,28 +48,20 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
   }
 
   bool shouldReload = false;
-  void initState() {
-    // TODO: implement initState
-    setState(() {
-      shouldReload = true;
-    });
-    super.initState();
-    fetchProduct();
-    fetchTracking();
-    // fetchProcess();
-  }
 
   String processID = "";
+  String userID = "";
   Product? product;
   Future fetchProduct() async {
     // tracking = await
     product = await productServices.fetchDetailProducts(
         context: context, id: widget.id);
-    print(product);
     if (mounted) {
       setState(() {
         processID = product?.processId ?? '';
+        userID = product?.userId ?? '';
         fetchProcess();
+        fetchName();
       });
     }
     // print(product);
@@ -105,6 +97,17 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
     } // Refresh the UI
   }
 
+  String nameUser = "";
+  Future fetchName() async {
+    nameUser =
+        await productServices.fetchNameUser(context: context, userId: userID);
+    if (mounted) {
+      setState(() {
+        // Cập nhật trạng thái của widget chỉ khi widget vẫn còn mounted
+      });
+    }
+  }
+
   String? stagePlantCare = "";
   String? stageBloom = "";
   String? stageHarvest = "";
@@ -138,6 +141,18 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
       print("URL can't be launched.");
       ;
     }
+  }
+
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      shouldReload = true;
+    });
+    super.initState();
+    fetchProduct();
+    fetchTracking();
+    // fetchName();
+    // fetchProcess();
   }
 
   @override
@@ -273,19 +288,46 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                               Container(
                                                 width: 290,
                                                 height: 60,
-                                                child: Row(
+                                                child: Column(
                                                   children: [
-                                                    Icon(Icons.add_location),
-                                                    Container(
-                                                      width: 250,
-                                                      child: Text(
-                                                        product!.address,
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyMedium,
-                                                      ),
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                            Icons.add_location),
+                                                        Container(
+                                                          width: 250,
+                                                          child: Text(
+                                                            product!.address,
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyMedium,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 8,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons
+                                                            .calendar_today_outlined),
+                                                        Container(
+                                                          width: 250,
+                                                          child: Text(
+                                                            product!.time,
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyMedium,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
@@ -351,7 +393,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                   width: 10,
                                                 ),
                                                 Text(
-                                                  user.name,
+                                                  nameUser,
                                                   style:
                                                       TextStyle(fontSize: 18),
                                                 )
@@ -444,7 +486,7 @@ class _QRCodeResultScreenState extends State<QRCodeResultScreen> {
                                                 .textTheme
                                                 .titleLarge,
                                           ),
-                                          user.userType == "Farmer"
+                                          user.userType == "Nông dân"
                                               ? ButtonWidget(
                                                   title: "Thêm",
                                                   onTap: () => {

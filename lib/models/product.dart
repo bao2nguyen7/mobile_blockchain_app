@@ -14,6 +14,7 @@ class Product {
   final String productId;
   final String description;
   final String processId;
+  final String userId;
   final List<String> images;
   final List<String> certificates;
   final List<String> tracking;
@@ -27,6 +28,7 @@ class Product {
     required this.description,
     required this.processId,
     required this.images,
+    required this.userId,
     required this.certificates,
     required this.tracking,
   });
@@ -43,6 +45,7 @@ class Product {
       'images': images,
       'certificates': certificates,
       'url': url,
+      'userId': userId,
       'tracking': tracking
     };
   }
@@ -53,6 +56,7 @@ class Product {
     final address = map['address'] as String;
     final time = map['time'] as String;
     final url = map['url'] as String;
+    final userId = map['userId'] as String;
     final productId = map['productId'] as String;
     final processId = map['processId'] as String;
     final description = map['description'] as String;
@@ -81,6 +85,7 @@ class Product {
         processId: processId,
         description: description,
         images: images,
+        userId: userId,
         certificates: certificates,
         tracking: tracking);
   }
@@ -96,6 +101,7 @@ class Product {
     String? address,
     String? time,
     String? url,
+    String? userId,
     String? processId,
     String? description,
     List<String>? images,
@@ -113,6 +119,7 @@ class Product {
       certificates: certificate ?? this.certificates,
       processId: processId ?? this.processId,
       url: url ?? this.url,
+      userId: userId ?? this.userId,
       tracking: tracking ?? this.tracking,
     );
   }

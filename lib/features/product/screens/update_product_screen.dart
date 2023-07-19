@@ -6,6 +6,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_downloader/image_downloader.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_blockchain/core/constants/color_constants.dart';
@@ -52,8 +53,10 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   String id = '';
   String processProductID = "";
   String productId = '';
+  String userId = '';
   List<String> images = [];
   List<String> certificate = [];
+  List<String> trackinglist = [];
   int? productNumber = 0;
   Future fetchDetailProduct() async {
     productNumber = await productServices.fetchDetailProductsBC(
@@ -70,13 +73,18 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     }
   }
 
+  int _progress = 2;
   void initState() {
     // TODO: implement initState
     fetchProcess();
     fetchProcesses();
     fetchTracking();
-    print("Tracking");
 
+    ImageDownloader.callback(onProgressUpdate: (String? imageId, int progress) {
+      setState(() {
+        _progress = progress;
+      });
+    });
     setState(() {
       _nameTextController.text = widget.product.name;
       _addressTextController.text = widget.product.address;
@@ -88,8 +96,12 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
       id = widget.product.id;
       productId = widget.product.productId;
       processProductID = widget.product.processId;
+      trackinglist = widget.product.tracking;
+      userId = widget.product.userId;
     });
     super.initState();
+    selectImages();
+    // selectCertificate();
   }
 
   final _updateProductFormKey = GlobalKey<FormState>();
@@ -104,16 +116,19 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         });
     if (_updateProductFormKey.currentState!.validate() && images.isNotEmpty) {
       productServices.updateProduct(
-          context: context,
-          id: id,
-          name: _nameTextController.text,
-          description: _descriptionTextController.text,
-          address: _addressTextController.text,
-          time: timeinput.text,
-          processId: processProductID,
-          images: images,
-          productId: productId,
-          certificate: certificate);
+        context: context,
+        id: id,
+        name: _nameTextController.text,
+        description: _descriptionTextController.text,
+        address: _addressTextController.text,
+        time: timeinput.text,
+        processId: processProductID,
+        images: _mulitpleFilesImages,
+        productId: productId,
+        certificates: _mulitpleFilesCertificate,
+        tracking: trackinglist,
+        userId: userId,
+      );
     }
     Navigator.of(context).pop();
   }
@@ -141,13 +156,53 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
       stageProcessName = process?.stageProcess?.name ?? '';
     });
   }
-  // List<File> imagess = [];
-  // void selectImages() async {
-  //   var res = await pickImages();
-  //   setState(() {
-  //     imagess = res;
-  //   });
-  // }
+
+  List<File> filesImage = [];
+  List<File> _mulitpleFilesImages = [];
+  List<File> filesCertificate = [];
+  List<File> _mulitpleFilesCertificate = [];
+  void selectImages() async {
+    for (var url in images) {
+      try {
+        final imageId = await ImageDownloader.downloadImage(url);
+        final path = await ImageDownloader.findPath(imageId!);
+        filesImage.add(File(path!));
+      } catch (error) {
+        print(error);
+      }
+    }
+    for (var url in certificate) {
+      try {
+        final imageId = await ImageDownloader.downloadImage(url);
+        final path = await ImageDownloader.findPath(imageId!);
+        filesCertificate.add(File(path!));
+      } catch (error) {
+        print(error);
+      }
+    }
+    setState(() {
+      _mulitpleFilesImages.addAll(filesImage);
+      _mulitpleFilesCertificate.addAll(filesCertificate);
+    });
+  }
+
+  List<File> imagess = [];
+  void selectImagesAfter() async {
+    var res = await pickImages();
+    setState(() {
+      imagess = res;
+      _mulitpleFilesImages.addAll(imagess);
+    });
+  }
+
+  List<File> imagessCertificate = [];
+  void selectCertificateAfter() async {
+    var res = await pickImages();
+    setState(() {
+      imagessCertificate = res;
+      _mulitpleFilesCertificate.addAll(imagessCertificate);
+    });
+  }
 
   List<Process> processes = [];
   Future fetchProcesses() async {
@@ -178,7 +233,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                               "${_chosenDateTime.day.toString()}/${_chosenDateTime.month.toString()}/${_chosenDateTime.year.toString()}";
                         });
                       },
-                      mode: CupertinoDatePickerMode.dateAndTime,
+                      mode: CupertinoDatePickerMode.date,
                     ),
                   ),
 
@@ -485,31 +540,35 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    reuseableRichText("Hình ảnh"),
+                                    reuseableRichText("Hình ảnh sản phẩm"),
                                   ],
                                 ),
                                 SizedBox(height: kDefaultPadding / 2),
-                                images.isNotEmpty
-                                    ? CarouselSlider(
-                                        items: images.map(
-                                          (i) {
-                                            return Builder(
-                                              builder: (BuildContext context) =>
-                                                  Image.network(
-                                                i,
-                                                fit: BoxFit.cover,
-                                                height: 200,
-                                              ),
-                                            );
-                                          },
-                                        ).toList(),
-                                        options: CarouselOptions(
-                                          viewportFraction: 1,
-                                          height: 200,
+                                _mulitpleFilesImages.isNotEmpty
+                                    ? GestureDetector(
+                                        onTap: selectImagesAfter,
+                                        child: CarouselSlider(
+                                          items: _mulitpleFilesImages.map(
+                                            (i) {
+                                              return Builder(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Image.file(
+                                                  i,
+                                                  fit: BoxFit.cover,
+                                                  height: 200,
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          options: CarouselOptions(
+                                            viewportFraction: 1,
+                                            height: 200,
+                                          ),
                                         ),
                                       )
                                     : GestureDetector(
-                                        // onTap: selectImages,
+                                        onTap: selectImagesAfter,
                                         child: DottedBorder(
                                           borderType: BorderType.RRect,
                                           radius: const Radius.circular(10),
@@ -533,6 +592,72 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                                 const SizedBox(height: 15),
                                                 Text(
                                                   'Chọn hình ảnh sản phẩm',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.grey.shade400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                SizedBox(height: kDefaultPadding * 2),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    reuseableRichTextNo("Hình ảnh chứng chỉ"),
+                                  ],
+                                ),
+                                SizedBox(height: kDefaultPadding / 2),
+                                _mulitpleFilesCertificate.isNotEmpty
+                                    ? GestureDetector(
+                                        onTap: selectCertificateAfter,
+                                        child: CarouselSlider(
+                                          items: _mulitpleFilesCertificate.map(
+                                            (i) {
+                                              return Builder(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Image.file(
+                                                  i,
+                                                  fit: BoxFit.cover,
+                                                  height: 200,
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          options: CarouselOptions(
+                                            viewportFraction: 1,
+                                            height: 200,
+                                          ),
+                                        ),
+                                      )
+                                    : GestureDetector(
+                                        onTap: selectCertificateAfter,
+                                        child: DottedBorder(
+                                          borderType: BorderType.RRect,
+                                          radius: const Radius.circular(10),
+                                          dashPattern: const [10, 4],
+                                          strokeCap: StrokeCap.round,
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 150,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Icon(
+                                                  Icons.folder_open,
+                                                  size: 40,
+                                                ),
+                                                const SizedBox(height: 15),
+                                                Text(
+                                                  'Chọn hình ảnh chứng chỉ',
                                                   style: TextStyle(
                                                     fontSize: 15,
                                                     color: Colors.grey.shade400,

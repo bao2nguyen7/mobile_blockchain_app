@@ -10,7 +10,7 @@ RichText reuseableRichText(String text) {
           style: TextStyle(color: ColorPalette.text1Color, fontSize: 16),
           children: <TextSpan>[
         TextSpan(
-            text: " (*)",
+            text: " *",
             style: TextStyle(
                 color: Colors.red, fontSize: 16, fontWeight: FontWeight.w800))
       ]));
@@ -23,7 +23,7 @@ RichText reuseableRichTextNo(String text) {
           style: TextStyle(color: ColorPalette.text1Color, fontSize: 16),
           children: <TextSpan>[
         TextSpan(
-            text: " (*)",
+            text: " *",
             style: TextStyle(
                 color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800))
       ]));

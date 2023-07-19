@@ -14,6 +14,7 @@ import '../../../core/helpers/assets_helper.dart';
 import '../../../core/helpers/image_helper.dart';
 import '../../admin/screens/intro_screen.dart';
 import '../../home/screens/home_screen.dart';
+import '../../qrcode/screens/qrcode_screen.dart';
 import '../services/auth_services.dart';
 
 class LoginScreen extends StatefulWidget {

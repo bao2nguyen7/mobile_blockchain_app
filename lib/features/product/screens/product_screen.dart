@@ -187,7 +187,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                       child: SingleProduct(
                                                           image: productData
                                                               .images[0],
-                                                          height: 140),
+                                                          height: 160),
                                                     ),
                                                   ),
                                                   Transform.translate(
@@ -312,7 +312,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                   children: [
                                                     Container(
                                                       height: 15,
-                                                      width: 200,
+                                                      width: 180,
                                                       child: FittedBox(
                                                         fit: BoxFit.contain,
                                                         child: Text(

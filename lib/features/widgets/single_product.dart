@@ -20,7 +20,7 @@ class SingleProduct extends StatelessWidget {
       child: ImageHelper.loadFromAsset(
         AssetsHelper.loadImage,
         height: 120,
-        width: 180,
+        width: 200,
       ),
     );
     return Container(
@@ -31,7 +31,7 @@ class SingleProduct extends StatelessWidget {
           color: Colors.white,
         ),
         child: Container(
-            width: 150,
+            width: 170,
             // padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
             child: image != null
