@@ -79,6 +79,15 @@ Widget customListTile(Tracking tracking, Product product, Process? process,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('Thời gian được tạo:',
+                style: TextStyle(fontWeight: FontWeight.w600)),
+            SizedBox(
+              height: 5,
+            ),
+            Text(tracking.time as String),
+            SizedBox(
+              height: 10,
+            ),
             Text('Mô tả:', style: TextStyle(fontWeight: FontWeight.w600)),
             SizedBox(
               height: 5,
